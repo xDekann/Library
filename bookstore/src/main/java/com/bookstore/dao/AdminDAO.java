@@ -1,6 +1,8 @@
 package com.bookstore.dao;
 
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bookstore.entity.Authority;
 import com.bookstore.entity.Employee;
 import com.bookstore.entity.User;
 
@@ -22,6 +25,7 @@ public class AdminDAO {
 		this.entityManager = entityManager;
 	}
 	
+	// selects and getters
 	@Transactional
 	public User getUserByUsername(String username) {
 		
@@ -38,11 +42,28 @@ public class AdminDAO {
 	}
 	
 	@Transactional
-	public void checker() {
-		
-		Query theQuery = entityManager.createNativeQuery("select e.* FROM employee e inner join client_connector c on c.user_id_user=e.emplid", Employee.class);
-		System.out.println(theQuery.getSingleResult());
+	public List<Authority> getAllAuthorities() {
+		Query theQuery = entityManager.createNativeQuery("select * from authorities", Authority.class);
+		List<Authority> authorities = theQuery.getResultList();
+		return authorities;
 	}
 	
+	@Transactional
+	public Authority getSingleAuthority(String name) {
+		Query theQuery = entityManager.createQuery("from authorities a where a.authorityName=:aname ", Authority.class);
+		theQuery.setParameter("aname", name);
+		
+		return (Authority) theQuery.getSingleResult();
+	}
+	
+	
+	// creations
+	// additions
+	
+	@Transactional
+	public void addUser(User user) {
+		User dbUser = entityManager.merge(user);
+		user.setId(dbUser.getId());
+	}
 	
 }

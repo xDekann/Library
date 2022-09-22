@@ -11,14 +11,17 @@
 </head>
 <body>
 	<h3>Admin site</h3>
-	<form th:action="@{/admins/creation/manual}" method="POST">
+	<form th:action="@{/admins/creation/user/form}" method="POST">
 		<button type="submit">Manually create user</button>
 	</form>
-	<form th:action="@{/admins/creation/employee}" method="POST">
+	<form th:action="@{/admins/creation/employee/form}" method="POST">
 		<button type="submit">Manually create employee</button>
 	</form>
-	<form th:action="@{/admins/creation/book}" method="POST">
+	<form th:action="@{/admins/creation/book/form}" method="POST">
 		<button type="submit">Manually create book</button>
+	</form>
+	<form th:action="@{/admins/creation/author/form}" method="POST">
+		<button type="submit">Manually create author</button>
 	</form>
 	<a th:href="@{/admins/show/employees}">Show employees</a>
 </body>

@@ -39,7 +39,7 @@ public class User {
 			joinColumns = @JoinColumn(name="user_id"),
 			inverseJoinColumns = @JoinColumn(name="role_id")
 			)
-	private Set<Authority> roles = new HashSet<>();
+	private Set<Authority> roles;
 
 	
 	@ManyToMany(fetch=FetchType.LAZY,
@@ -108,6 +108,12 @@ public class User {
 		return enabled;
 	}
 
+	public void addAuthority(Authority auth) {
+		if(roles==null) roles = new HashSet<>();
+		roles.add(auth);
+	
+	}
+	
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", password=" + password + ", enabled=" + enabled
