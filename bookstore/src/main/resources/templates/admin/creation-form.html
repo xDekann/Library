@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<HTML lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Creation form</title>
+</head>
+<body>
+	<h3>Creation form</h3>
+	<hr>
+	<form th:action="@{/creation/byManual}" th:object="${user}" method="POST">
+		<input type="text" th:field="*{name}" placeholder="Username">
+		<input type="password" th:field="*{userPassword}" placeholder="Password">
+		<button type="submit">Add</button>
+		<div th:each="authority,i:*{roles}">
+        	<input type="text" th:field="*{roles[__${i.index}__].authority}"/>
+        	<input type="text" th:field="*{roles[__${i.index}__].authority}"/>
+    	</div>
+	</form>
+	<a th:href="@{/admins/start}">Back</a>
+</body>
+</html>
