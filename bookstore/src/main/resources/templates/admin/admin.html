@@ -11,18 +11,9 @@
 </head>
 <body>
 	<h3>Admin site</h3>
-	<form th:action="@{/admins/creation/user/form}" method="POST">
-		<button type="submit">Manually create user</button>
-	</form>
-	<form th:action="@{/admins/creation/employee/form}" method="POST">
-		<button type="submit">Manually create employee</button>
-	</form>
-	<form th:action="@{/admins/creation/book/form}" method="POST">
-		<button type="submit">Manually create book</button>
-	</form>
-	<form th:action="@{/admins/creation/author/form}" method="POST">
-		<button type="submit">Manually create author</button>
-	</form>
+	<a th:href="@{/admins/creation/user/form}"> Create user</a><br>
+	<a th:href="@{/admins/creation/employee/form}"> Create employee</a><br>
+	<a th:href="@{/admins/creation/author/form}"> Create author</a><br>
 	<hr>
 	<a th:href="@{/admins/show/employees/get}">Show employees</a><br>
 	<a th:href="@{/admins/show/authors/get}">Show authors</a><br>
