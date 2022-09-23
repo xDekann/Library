@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<HTML lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>User add form</title>
+</head>
+<body>
+	<p class="h1 mb-4 ml-1 mt-1">Add User</p>
+	<form th:action="@{/admins/creation/employee/creation}" th:object="${empl}" method="POST">
+	
+		<input type="hidden" th:field="*{id}">
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="name">Name</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{name}" placeholder="Name" th:required="required" id="name">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="surname">Surname</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{surname}" placeholder="Surname" th:required="required" id="surname">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="email">Email</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{email}" placeholder="Email" th:required="required" id="email">
+			</div>
+		</div>
+		<button class="btn btn-primary col-sm-3 ml-1" type="submit">Submit</button>
+	</form>
+</body>
+</html>

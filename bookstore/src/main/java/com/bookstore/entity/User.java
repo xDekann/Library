@@ -17,6 +17,10 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity(name="users")
 @Table(name="users")
 public class User {
@@ -33,7 +37,8 @@ public class User {
 	@Column(name="enabled")
 	private Boolean enabled;
 	
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(fetch=FetchType.LAZY,
+			cascade = CascadeType.ALL)
 	@JoinTable(
 			name="user_auth",
 			joinColumns = @JoinColumn(name="user_id"),
@@ -45,7 +50,7 @@ public class User {
 	@ManyToMany(fetch=FetchType.LAZY,
 			cascade = CascadeType.ALL)
 	@JoinTable(
-			name="client_connector",
+			name="employee_connector",
 			joinColumns=@JoinColumn(name="user_id_user"),
 			inverseJoinColumns = @JoinColumn(name="user_id_spring")
 			  )

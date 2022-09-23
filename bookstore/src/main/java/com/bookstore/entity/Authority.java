@@ -4,11 +4,15 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity(name="authorities")
 @Table(name="authorities")
@@ -21,7 +25,8 @@ public class Authority {
 	@Column(name="authority")
 	private String authorityName;
 	
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(fetch=FetchType.LAZY,
+    		mappedBy = "roles")
     private List <User> users;
 	
 	public Authority() {
@@ -47,6 +52,7 @@ public class Authority {
 	public void setAuthorityName(String authorityName) {
 		this.authorityName = authorityName;
 	}
+
 
 	
 	

@@ -76,7 +76,7 @@ public class SecurityConfig{
 								   			 .antMatchers("/home").hasAnyRole("STUDENT","TEACHER","ADMIN")
 								   			 .antMatchers("/students/**").hasRole("STUDENT")
 								   			 .antMatchers("/teachers/**").hasRole("TEACHER")
-								   			 .antMatchers("/admin/**").hasRole("ADMIN"))
+								   			 .antMatchers("/admins/**").hasRole("ADMIN"))
 				.formLogin(configurer->configurer.loginPage("/auth/showLoginPage")
 						 .loginProcessingUrl("/authenticateUser")
 						 .permitAll()

@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<HTML lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Book creation form</title>
+</head>
+<body>
+	<p class="h1 mb-4 ml-1 mt-1">Add book</p>
+	<form th:action="@{/admins/creation/book/creation}" th:object="${book}" method="POST">
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="isbn">Isbn</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{isbn}" placeholder="1234" th:required="required" id="isbn">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="title">Title</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{title}" placeholder="Title" th:required="required" id="title">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="publishingHouse">Publishing house</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{publishingHouse}" placeholder="Publishing house" th:required="required" id="publishingHouse">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="yOfPublishment">Year of publishment</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{yOfPublishment}" placeholder="2022" th:required="required" id="yOfPublishment">
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="borrowTime">Borrow time</label>
+			<div class="col-sm-5">
+				<input type="text" th:field="*{borrowTime}" placeholder="7" th:required="required" id="borrowTime">
+			</div>
+		</div>
+		<div th:object="${author}">
+			<input type="hidden" th:value="${author.id}" th:name="authId">
+		</div>
+		<button class="btn btn-primary col-sm-3 ml-1" type="submit">Submit</button>
+	</form>
+</body>
+</html>
