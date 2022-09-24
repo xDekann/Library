@@ -12,10 +12,18 @@
 </head>
 <body>
 <div class="container">
-	<h3>Authors</h3>
-	
-	<a th:href="@{/admins/creation/author/form}" class="btn btn-primary btn-sm mb-2"> Add Author</a>
-	
+	<h3 class="ml-2">Authors</h3>
+		<div class="form-group row">
+			<form th:action="@{/admins/show/authors/get/viasearch}" method="GET">
+				<div class="col-sm-5 d-inline ml-2">
+					<a th:href="@{/admins/start}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
+					<a th:href="@{/admins/creation/author/form}" class="btn btn-primary btn-sm mb-2"> Add Author</a>
+					<a th:href="@{/admins/show/authors/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
+					<button class="btn btn-primary btn-sm mb-2" type="submit">Search -></button>
+					<input type="text" th:name="authorS" placeholder="Author surname">
+					</div>
+			</form>
+		</div>
 	<table class="table table-bordered table-striped">
 		<thead class="thead-dark">
 			<tr>
@@ -30,7 +38,6 @@
 				<td th:text="${author.name}"/>
 				<td th:text="${author.surname}"/>	
 				<td>
-					<a th:href="@{/admins/creation/book/form(authorId=${author.id})}" class="btn btn-info btn-sm" >Add book</a>
 					<a th:href="@{/admins/show/book/showall(authorId=${author.id})}" class="btn btn-info btn-sm" >Show books</a>
 				</td>
 			</tr>

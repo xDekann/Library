@@ -23,6 +23,7 @@ import com.bookstore.entity.Author;
 import com.bookstore.entity.Authority;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.BookCopy;
+import com.bookstore.entity.Client;
 import com.bookstore.entity.Employee;
 import com.bookstore.entity.User;
 
@@ -43,9 +44,6 @@ public class AdminController {
 	
 	// creations
 	// user creation
-	
-	
-	
 	@GetMapping("creation/user/form")
 	public String createUserForm(Model theModel) {
 		
@@ -77,7 +75,26 @@ public class AdminController {
 	}
 	@PostMapping("creation/employee/creation")
 	public String createEmployee(@ModelAttribute("empl") Employee employee) {
+		
+		// add account for newly created employee
+		// temporarily disabled - need configuration by admin!
+		User user = new User();
+		user.setEnabled(false);
+		user.setUsername(employee.getName()+" "+employee.getSurname());
+		user.setPassword(encoder.encode(employee.getName()+" "+employee.getSurname()));
+		
+		// add to database
+		//adminDAO.addUser(user);
+		//adminDAO.addEmployee(employee);
+		
+		// link user to account and vice versa
+		employee.addUser(user);
+		user.addEmployee(employee);
+		
+		// update the link
+		//adminDAO.addUser(user);
 		adminDAO.addEmployee(employee);
+		
 		return "redirect:/admins/show/employees/get";
 	}
 	@GetMapping("creation/author/form")
@@ -90,7 +107,7 @@ public class AdminController {
 	@PostMapping("creation/author/creation")
 	public String createAuthor(@ModelAttribute("author") Author author) {
 		adminDAO.addAuthor(author);
-		return "redirect:/admins/start";
+		return "redirect:/admins/show/authors/get";
 	}
 	
 	/*
@@ -174,6 +191,34 @@ public class AdminController {
 		return "employee/pure-books";
 	}
 	
+	@GetMapping("creation/client/form") 
+	public String createClientForm(Model theModel) {
+		
+		Client client = new Client();
+		theModel.addAttribute("client",client);
+		
+		return "employee/client-form";
+	}
+	@PostMapping("creation/client/creation")
+	public String createClient(@ModelAttribute("client") Client client) {
+		// add account for newly created employee
+		// temporarily disabled - need configuration by admin!
+		User user = new User();
+		user.setEnabled(false);
+		user.setUsername(client.getName()+" "+client.getSurname());
+		user.setPassword(encoder.encode(client.getName()+" "+client.getSurname()));
+		
+		
+		// link user to account and vice versa
+		client.addUser(user);
+		user.addClient(client);
+		
+		// update the link
+		adminDAO.addClient(client);
+		
+		return "redirect:/admins/show/clients/get";
+	}
+	
 	// select/show
 	
 	@GetMapping("show/users/get")
@@ -221,6 +266,14 @@ public class AdminController {
 		return "employee/pure-books";
 	}
 	
+	@GetMapping("show/clients/get")
+	public String showAllClients(Model theModel) {
+		
+		theModel.addAttribute("clients", adminDAO.getAllClients());
+		
+		return "employee/show-clients";
+	}
+	
 	@GetMapping("show/books/get/viasearch")
 	public String showCertainBooks(@RequestParam (value="titleS",required = false) String name, Model theModel) {
 		theModel.addAttribute("books",adminDAO.getBooksByName(name));
@@ -231,7 +284,7 @@ public class AdminController {
 	
 	@GetMapping("show/authors/get/viasearch")
 	public String showCertainAuthors(@RequestParam (value="authorS", required=false) String surname, Model theModel) {
-		theModel.addAttribute("authors",adminDAO.getAuthorsByName(surname));
+		theModel.addAttribute("authors",adminDAO.getAuthorsBySurname(surname));
 		return "employee/show-authors";
 	}
 	
@@ -241,6 +294,17 @@ public class AdminController {
 		return "admin/show-users";
 	}
 	
+	@GetMapping("show/employees/get/viasearch")
+	public String showCertainEmployees(@RequestParam (value="emplS", required=false) String surname, Model theModel) {
+		theModel.addAttribute("employees",adminDAO.getEmployeesBySurname(surname));
+		return "admin/show-emps";
+	}
+	
+	@GetMapping("show/clients/get/viasearch")
+	public String showCertainClients(@RequestParam (value="clientS", required=false) String email, Model theModel) {
+		theModel.addAttribute("clients",adminDAO.getClientsByEmail(email));
+		return "employee/show-clients";
+	}
 	// update
 	@GetMapping("update/employee/form")
 	public String updateEmployee(@RequestParam("emplId") int id, Model theModel) {
@@ -279,6 +343,14 @@ public class AdminController {
 		return "admin/user-form";
 	}
 	
+	@GetMapping("update/client/form")
+	public String updateClient(@RequestParam("clientId") int id, Model theModel) {
+		
+		theModel.addAttribute("client", adminDAO.getClientById(id));
+		
+		return "employee/client-form";
+	}
+	
 	// delete
 	@GetMapping("delete/employee")
 	public String deleteEmployee(@RequestParam ("emplId") int id) {
@@ -300,6 +372,20 @@ public class AdminController {
 		theModel.addAttribute("books", adminDAO.getAllBooks());
 		
 		return "employee/pure-books";
+	}
+	
+	@GetMapping("delete/user/delete")
+	public String deleteUser(@RequestParam("userId") int id) {
+		adminDAO.deleteUser(id);
+		
+		return "redirect:/admins/show/users/get";
+	}
+	
+	@GetMapping("delete/client/delete")
+	public String deleteClient(@RequestParam("clientId") int id) {
+		adminDAO.deleteClient(id);
+		
+		return "redirect:/admins/show/clients/get";
 	}
 	
 	// other

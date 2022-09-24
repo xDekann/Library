@@ -7,20 +7,20 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<title>Employees listing</title>
+	<title>Client listing</title>
 </head>
 <body>
 <div class="container">
-	<h3 class="ml-2">Employees</h3>
+	<h3 class="ml-2">Clients</h3>
 	
 	<div class="form-group row">
-		<form th:action="@{/admins/show/employees/get/viasearch}" method="GET">
+		<form th:action="@{/admins/show/clients/get/viasearch}" method="GET">
 			<div class="col-sm-5 d-inline ml-2">
 				<a th:href="@{/admins/start}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
-				<a th:href="@{/admins/creation/employee/form}" class="btn btn-primary btn-sm mb-2"> Add Employee</a>
-				<a th:href="@{/admins/show/employees/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
+				<a th:href="@{/admins/creation/client/form}" class="btn btn-primary btn-sm mb-2"> Add Client</a>
+				<a th:href="@{/admins/show/clients/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
 				<button class="btn btn-primary btn-sm mb-2" type="submit">Search -></button>
-				<input type="text" th:name="emplS" placeholder="Surname">
+				<input type="text" th:name="clientS" placeholder="example@mail.com">
 				</div>
 		</form>
 	</div>
@@ -35,13 +35,14 @@
 		</thead>
 		
 		<tbody>
-			<tr th:each="empl : ${employees}">
-				<td th:text="${empl.name}"/>
-				<td th:text="${empl.surname}"/>
-				<td th:text="${empl.email}"/>
+			<tr th:each="client : ${clients}">
+				<td th:text="${client.name}"/>
+				<td th:text="${client.surname}"/>
+				<td th:text="${client.email}"/>
 				<td>
-					<a th:href="@{/admins/update/employee/form(emplId=${empl.id})}" class="btn btn-info btn-sm" >Update</a>
-					<a th:href="@{/admins/delete/employee(emplId=${empl.id})}"  class="btn btn-danger btn-sm" >Delete</a>
+					<a th:href="@{/admins/update/client/form(clientId=${client.id})}" class="btn btn-info btn-sm" >Update</a>
+					<a th:href="@{/admins/delete/client/delete(clientId=${client.id})}"  class="btn btn-danger btn-sm" >Delete</a>
+					<a th:href="@{/admins/update/client/rents(clientId=${client.id})}" class="btn btn-info btn-sm" >Show Rents</a>
 				</td>
 			</tr>
 		</tbody>

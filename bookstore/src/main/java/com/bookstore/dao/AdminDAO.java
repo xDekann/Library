@@ -16,6 +16,7 @@ import com.bookstore.entity.Author;
 import com.bookstore.entity.Authority;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.BookCopy;
+import com.bookstore.entity.Client;
 import com.bookstore.entity.Employee;
 import com.bookstore.entity.User;
 import com.bookstore.security.BookUserDetailsService;
@@ -124,7 +125,7 @@ public class AdminDAO {
 	}
 	
 	@Transactional
-	public List<Author> getAuthorsByName(String surname) {
+	public List<Author> getAuthorsBySurname(String surname) {
 		List<Author> authors = null;
 		try {
 			Query theQuery = entityManager.createNativeQuery("select distinct a.* from author a left join author_connector ac on a.authorid=ac.author_idC where a.surname=:thesurname",Author.class);
@@ -134,6 +135,19 @@ public class AdminDAO {
 			
 		}
 		return authors;	
+	}
+	
+	@Transactional
+	public List<Employee> getEmployeesBySurname(String surname) {
+		List<Employee> employees = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct e.* from employee e left join employee_connector ec on e.emplid = ec.user_id_user where e.surname=:thesurname",Employee.class);
+			theQuery.setParameter("thesurname", surname);
+			employees = theQuery.getResultList();
+		}catch (NoResultException nr) {
+			
+		}
+		return employees;	
 	}
 	
 	@Transactional
@@ -186,8 +200,42 @@ public class AdminDAO {
 		}catch(NoResultException nr) {
 			
 		}
-		return bookCopy;
-		
+		return bookCopy;	
+	}
+	@Transactional
+	public List<Client> getAllClients() {
+		List<Client> clients = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct c.* from client c left join book_rent br on c.clientid=br.clientidR", Client.class);
+			clients = theQuery.getResultList();
+		}catch(NoResultException nr) {
+			
+		}
+		return clients;
+	}
+	@Transactional
+	public List<Client> getClientsByEmail(String email){
+		List<Client> clients = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct c.* from client c where c.email=:theemail", Client.class);
+			theQuery.setParameter("theemail", email);
+			clients = theQuery.getResultList();
+		}catch(NoResultException nr) {
+			
+		}
+		return clients;
+	}
+	@Transactional
+	public Client getClientById(int id){
+		Client client = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct c.* from client c where c.clientid=:theid", Client.class);
+			theQuery.setParameter("theid", id);
+			client = (Client) theQuery.getSingleResult();
+		}catch(NoResultException nr) {
+			
+		}
+		return client;
 	}
 	// creations
 	// additions (merge = add/update)
@@ -217,7 +265,11 @@ public class AdminDAO {
 		BookCopy dBookCopy = entityManager.merge(bookCopy);
 		bookCopy.setId(dBookCopy.getId());
 	}
-	
+	@Transactional
+	public void addClient(Client client) {
+		Client dbClient = entityManager.merge(client);
+		client.setId(dbClient.getId());
+	}
 	// deletion
 	@Transactional
 	public void deleteEmployee(int id) {
@@ -228,6 +280,18 @@ public class AdminDAO {
 	@Transactional
 	public void deleteBookCopy(int id) {
 		Query theQuery = entityManager.createQuery("delete from book_copy bc where bc.id=:theid");
+		theQuery.setParameter("theid", id);
+		theQuery.executeUpdate();
+	}
+	@Transactional
+	public void deleteUser(int id) {
+		Query theQuery = entityManager.createNativeQuery("delete from users u where u.id=:theid");
+		theQuery.setParameter("theid", id);
+		theQuery.executeUpdate();
+	}
+	@Transactional
+	public void deleteClient(int id) {
+		Query theQuery = entityManager.createNativeQuery("delete from client c where c.clientid=:theid");
 		theQuery.setParameter("theid", id);
 		theQuery.executeUpdate();
 	}

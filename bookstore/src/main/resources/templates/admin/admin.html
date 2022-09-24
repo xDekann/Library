@@ -14,8 +14,12 @@
 	<a th:href="@{/admins/creation/employee/form}"> Create employee</a><br>
 	<hr>
 	<a th:href="@{/admins/show/users/get}">Show users</a><br>
+	<a th:href="@{/admins/show/clients/get}">Show clients</a><br>
 	<a th:href="@{/admins/show/employees/get}">Show employees</a><br>
 	<a th:href="@{/admins/show/authors/get}">Show authors</a><br>
 	<a th:href="@{/admins/show/books/get}">Show books</a><br>
+	<form th:action="@{/logout}" method="POST">
+		<input type="submit" value="Logout">
+	</form>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.bookstore.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
@@ -37,8 +39,7 @@ public class User {
 	@Column(name="enabled")
 	private Boolean enabled;
 	
-	@ManyToMany(fetch=FetchType.LAZY,
-			cascade = CascadeType.ALL)
+	@ManyToMany(fetch=FetchType.LAZY)
 	@JoinTable(
 			name="user_auth",
 			joinColumns = @JoinColumn(name="user_id"),
@@ -48,13 +49,16 @@ public class User {
 
 	
 	@ManyToMany(fetch=FetchType.LAZY,
-			cascade = CascadeType.ALL)
-	@JoinTable(
-			name="employee_connector",
-			joinColumns=@JoinColumn(name="user_id_user"),
-			inverseJoinColumns = @JoinColumn(name="user_id_spring")
-			  )
-	private List<Employee> employees;
+			cascade = CascadeType.ALL,
+			mappedBy="users"
+			)
+	private Set<Employee> employees;
+	
+	@ManyToMany(fetch=FetchType.LAZY,
+			cascade = CascadeType.ALL,
+			mappedBy="users_client"
+			)
+	private Set<Client> clients;
 	
 	
 	public User() {
@@ -99,13 +103,12 @@ public class User {
 	public void setRoles(Set<Authority> roles) {
 		this.roles = roles;
 	}
-	
-	
-	public List<Employee> getEmployees() {
+
+	public Set<Employee> getEmployees() {
 		return employees;
 	}
 
-	public void setEmployees(List<Employee> employees) {
+	public void setEmployees(Set<Employee> employees) {
 		this.employees = employees;
 	}
 
@@ -125,6 +128,14 @@ public class User {
 				+ ", roles=" + roles + "]";
 	}
 	
+	public void addEmployee(Employee emp) {
+		if(employees==null) employees = new HashSet<>();
+		employees.add(emp);
+	}
 	
+	public void addClient(Client client) {
+		if(clients==null) clients = new HashSet<>();
+		clients.add(client);
+	}
 	
 }

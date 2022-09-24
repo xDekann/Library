@@ -1,6 +1,9 @@
 package com.bookstore.entity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Table(name="employee")
 @Entity(name="employee")
@@ -35,10 +39,11 @@ public class Employee {
 			cascade = CascadeType.ALL)
 	@JoinTable(
 			name="employee_connector",
-			joinColumns=@JoinColumn(name="user_id_spring"),
-			inverseJoinColumns = @JoinColumn(name="user_id_user")
-			  )
-	private List<User> users;
+			joinColumns=@JoinColumn(name="user_id_user"),
+			inverseJoinColumns = @JoinColumn(name="user_id_spring"),
+			uniqueConstraints = @UniqueConstraint(columnNames = {"user_id_spring","user_id_user"})
+			)
+	private Set<User> users;
 	
 	public Employee() {
 	}
@@ -76,18 +81,22 @@ public class Employee {
 		this.email = email;
 	}
 	
-	public List<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
+	public void setUsers(Set<User> users) {
 		this.users = users;
 	}
-	
 
 	@Override
 	public String toString() {
 		return "Employee [id=" + id + ", name=" + name + ", surname=" + surname + ", email=" + email + "]";
+	}
+	
+	public void addUser(User user) {
+		if(users==null) users = new HashSet<>();
+		users.add(user);
 	}
 	
 }
