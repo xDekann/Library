@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Table(name="book")
@@ -24,7 +25,7 @@ public class Book {
 	@Column(name="bookid")
 	private int id;
 	@Column(name="isbn")
-	private int isbn;
+	private long isbn;
 	@Column(name="title")
 	private String title;
 	@Column(name="publishing_house")
@@ -42,6 +43,10 @@ public class Book {
 			inverseJoinColumns = @JoinColumn(name="author_idC")
 			)
 	private List<Author> authors;
+	
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@JoinColumn(name = "fk_book")
+	private List<BookCopy> copies;
 	
 	public Book() {
 	}
@@ -62,12 +67,14 @@ public class Book {
 		this.authors = authors;
 	}
 
-	public int getIsbn() {
+	public long getIsbn() {
 		return isbn;
 	}
-	public void setIsbn(int isbn) {
+
+	public void setIsbn(long isbn) {
 		this.isbn = isbn;
 	}
+
 	public String getTitle() {
 		return title;
 	}
@@ -96,6 +103,20 @@ public class Book {
 	public void addAuthor(Author author) {
 		if(authors==null) authors = new ArrayList<>();
 		authors.add(author);
+	}
+	
+	public List<BookCopy> getCopies() {
+		return copies;
+	}
+
+	public void setCopies(List<BookCopy> copies) {
+		this.copies = copies;
+	}
+
+	public void addCopy(BookCopy theCopy) {
+		if(copies==null) copies = new ArrayList<>();
+		copies.add(theCopy);
+		//theCopy.setBook(this);
 	}
 	
 	@Override

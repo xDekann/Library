@@ -8,30 +8,31 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<title>Employees listing</title>
-
 </head>
 <body>
 <div class="container">
-	<h3>Authors</h3>
+	<h3>Employees</h3>
 	
-	<a th:href="@{/admins/creation/author/form}" class="btn btn-primary btn-sm mb-2"> Add Author</a>
+	<a th:href="@{/admins/start}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
 	
 	<table class="table table-bordered table-striped">
 		<thead class="thead-dark">
 			<tr>
 				<th>Name</th>
 				<th>Surname</th>
-				<th>Books</th>
+				<th>Email</th>
+				<th>Options</th>
 			</tr>
 		</thead>
 		
 		<tbody>
-			<tr th:each="author : ${authors}">
-				<td th:text="${author.name}"/>
-				<td th:text="${author.surname}"/>	
+			<tr th:each="empl : ${employees}">
+				<td th:text="${empl.name}"/>
+				<td th:text="${empl.surname}"/>
+				<td th:text="${empl.email}"/>
 				<td>
-					<a th:href="@{/admins/creation/book/form(authorId=${author.id})}" class="btn btn-info btn-sm" >Add book</a>
-					<a th:href="@{/admins/show/book/showall(authorId=${author.id})}" class="btn btn-info btn-sm" >Show books</a>
+					<a th:href="@{/admins/update/employee/form(emplId=${empl.id})}" class="btn btn-info btn-sm" >Update</a>
+					<a th:href="@{/admins/delete/employee(emplId=${empl.id})}"  class="btn btn-danger btn-sm" >Delete</a>
 				</td>
 			</tr>
 		</tbody>

@@ -1,5 +1,7 @@
 package com.bookstore;
 
+import static org.mockito.ArgumentMatchers.intThat;
+
 import java.util.List;
 import java.util.Set;
 
@@ -15,6 +17,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bookstore.entity.Authority;
+import com.bookstore.entity.Book;
 import com.bookstore.entity.Employee;
 
 @SpringBootTest
@@ -25,7 +28,7 @@ class DBTesting{
 	
 	@Test
 	void seeIfEmplUserConnectionTableWorks() {
-		Query theQuery = entityManager.createNativeQuery("select e.* FROM employee e inner join client_connector c on c.user_id_user=e.emplid", Employee.class);
+		Query theQuery = entityManager.createNativeQuery("select e.* FROM employee e inner join employee_connector c on c.user_id_user=e.emplid", Employee.class);
 		System.out.println(theQuery.getSingleResult());
 	}
 	@Test
@@ -43,5 +46,13 @@ class DBTesting{
 		System.out.println("seeIfCanGetSingleAuthorityByName()");
 		System.out.println(((Authority) theQuery.getSingleResult()).getAuthorityName());
 		
+	}
+	@Test
+	void seeIfYouCanGetAllAuthorBooks() {
+		int id=1;
+		Query theQuery = entityManager.createQuery("from book b inner join fetch b.authors a where a.id=: theid",Book.class);
+		theQuery.setParameter("theid", id);
+		List<Book> books = theQuery.getResultList();
+		books.forEach(book->System.out.println(book.getId()));
 	}
 }

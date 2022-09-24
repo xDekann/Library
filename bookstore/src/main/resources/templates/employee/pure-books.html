@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<HTML lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Author's books</title>
+
+</head>
+<body>
+	<h3 class="ml-2">Books</h3>
+	<div class="form-group row">
+		<form th:action="@{/admins/show/books/get/viasearch}" method="POST">
+			<div class="col-sm-5 d-inline ml-2">
+				<a th:href="@{/admins/start}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
+				<button class="btn btn-primary btn-sm mb-2" type="submit">Search</button>
+				<input type="text" th:name="titleS" placeholder="Book name">
+				<span th:if="${#strings.equals(quantity, '1')}" th:text="'Selected book has ' + ${quantityVal} + ' available to borrow copie(s)'"></span>
+			</div>
+		</form>
+	</div>
+	<table class="table table-bordered table-striped">
+		<thead class="thead-dark">
+			<tr>
+				<th>Title</th>
+				<th>Publishing house</th>
+				<th>Year of publishment</th>
+				<th>Authors</th>
+				<th>Options</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<tr th:each="book : ${books}">
+				<td th:text="${book.title}"/>
+				<td th:text="${book.publishingHouse}"/>	
+				<td th:text="${book.yOfPublishment}">
+				<td>---</td>
+				<td>
+					<a th:href="@{/admins/show/books/get/available(bookId=${book.id})}" class="btn btn-info btn-sm" >Check availability</a>
+					<a th:href="@{/admins/creation/book/creation/add/quantity(bookId=${book.id})}" class="btn btn-info btn-sm" >Add quantity</a>
+					<a th:href="@{/admins/deletion/book/deletion/del/quantity(bookId=${book.id})}" class="btn btn-danger btn-sm" >Remove quantity</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</HTML>
