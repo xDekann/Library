@@ -1,7 +1,11 @@
 package com.bookstore.controller;
 
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +43,9 @@ public class AdminController {
 	
 	// creations
 	// user creation
+	
+	
+	
 	@GetMapping("creation/user/form")
 	public String createUserForm(Model theModel) {
 		
@@ -60,7 +67,7 @@ public class AdminController {
 			user.addAuthority(adminDAO.getAuthority(role));
 		});
 		adminDAO.addUser(user);
-		return "redirect:/admins/start";
+		return "redirect:/admins/show/users/get";
 	}
 	@GetMapping("creation/employee/form")
 	public String createEmployeeForm(Model theModel) {
@@ -86,6 +93,7 @@ public class AdminController {
 		return "redirect:/admins/start";
 	}
 	
+	/*
 	@GetMapping("creation/book/form") 
 	public String createBookForm(@RequestParam("authorId") int id, Model theModel) {
 		
@@ -98,16 +106,53 @@ public class AdminController {
 		
 		return "employee/book-creation";
 	}
+	*/
+	@GetMapping("creation/book/form") 
+	public String createBookForm(Model theModel) {
+		
+		Book book = new Book();
+		theModel.addAttribute("book",book);
+		
+		return "employee/book-form";
+	}
+	
 	@PostMapping("creation/book/creation") //
-	public String createBook(@RequestParam("authId") int authorId, 
+	public String createBook(@RequestParam(value="nicknames") String authors, 
 			@ModelAttribute("book") Book book) {
 		
-		Author author = adminDAO.getAuthor(authorId);
-		author.addBook(book);
-		adminDAO.addBook(book);
+		//Author author = adminDAO.getAuthor(authorId);
+		//author.addBook(book);
+		//adminDAO.addBook(book);
 		
-		//System.out.println(book.getId());
-		//author.getBooks().forEach(copy->System.out.println(copy));	
+		//authors.forEach(author->System.out.println(author));
+		
+		// getting all authors name+surname into separate strings
+		List<String> authorsObtained = Arrays.asList(authors.split(", "));
+		List<String> separateDetails = null;
+		String name;
+		String surname;
+		Author dbAuthor;
+		
+		for(String author : authorsObtained) {
+			// getting one author's name in one and surname in second string
+			separateDetails = Arrays.asList(author.split(" "));
+			name = separateDetails.get(0);
+			surname = separateDetails.get(1);
+			System.out.println(name+" "+surname);
+			dbAuthor = adminDAO.getAuthorByDetails(name, surname);
+			if(dbAuthor == null) {
+				dbAuthor = new Author();
+				dbAuthor.setName(name);
+				dbAuthor.setSurname(surname);
+				dbAuthor.addBook(book);
+				adminDAO.addAuthor(dbAuthor);
+			}else {
+				dbAuthor.addBook(book);
+			}
+			dbAuthor=null;
+		}
+		
+		adminDAO.addBook(book);
 		
 		return "redirect:/admins/show/authors/get";
 	}
@@ -130,9 +175,15 @@ public class AdminController {
 	}
 	
 	// select/show
+	
+	@GetMapping("show/users/get")
+	public String showAllUsers(Model theModel) {
+		theModel.addAttribute("users",adminDAO.getAllUsers());
+		return "admin/show-users";
+	}
+	
 	@GetMapping("show/authors/get")
 	public String showAllAuthors(Model theModel) {
-		
 		theModel.addAttribute("authors", adminDAO.getAllAuthors());
 		return "employee/show-authors";
 	}
@@ -158,7 +209,10 @@ public class AdminController {
 	@GetMapping("show/books/get") // pure book show
 	public String showAllBooks(Model theModel) {
 		
-		theModel.addAttribute("books", adminDAO.getAllBooks());
+		List<Book> allBooks = adminDAO.getAllBooks();
+		
+		theModel.addAttribute("books", allBooks);
+		
 		String bookTitleForSearch="";
 		theModel.addAttribute("titleS", bookTitleForSearch);
 		// state of pure-books.html span
@@ -167,14 +221,25 @@ public class AdminController {
 		return "employee/pure-books";
 	}
 	
-	@PostMapping("show/books/get/viasearch")
-	public String showCertainBooks(@RequestParam ("titleS") String name, Model theModel) {
+	@GetMapping("show/books/get/viasearch")
+	public String showCertainBooks(@RequestParam (value="titleS",required = false) String name, Model theModel) {
 		theModel.addAttribute("books",adminDAO.getBooksByName(name));
 		// state of pure-books.html span
 		theModel.addAttribute("quantity", new String("0"));
 		return "employee/pure-books";
 	}
 	
+	@GetMapping("show/authors/get/viasearch")
+	public String showCertainAuthors(@RequestParam (value="authorS", required=false) String surname, Model theModel) {
+		theModel.addAttribute("authors",adminDAO.getAuthorsByName(surname));
+		return "employee/show-authors";
+	}
+	
+	@GetMapping("show/users/get/viasearch")
+	public String showCertainUsers(@RequestParam (value="userS", required=false) String username, Model theModel) {
+		theModel.addAttribute("users",adminDAO.getUsersByUsername(username));
+		return "admin/show-users";
+	}
 	
 	// update
 	@GetMapping("update/employee/form")
@@ -184,13 +249,41 @@ public class AdminController {
 		
 		return "admin/emp-form";
 	}
+	
+	@GetMapping("update/user/disable")
+	public String disableUser(@RequestParam("userId") int id) {
+		
+		User user = adminDAO.getUserById(id);
+		user.setEnabled(false);
+		adminDAO.addUser(user);
+		return "redirect:/admins/show/users/get";
+	}
+	
+	@GetMapping("update/user/enable")
+	public String enableUser(@RequestParam("userId") int id) {
+		
+		User user = adminDAO.getUserById(id);
+		user.setEnabled(true);
+		adminDAO.addUser(user);
+		return "redirect:/admins/show/users/get";
+	}
+	
+	@GetMapping("update/user/update")
+	public String updateUser(@RequestParam("userId") int id, Model theModel) {
+		User user = adminDAO.getUserById(id);
+		List<Authority> auths = adminDAO.getAllAuthorities();
+		
+		theModel.addAttribute("user",user);
+		theModel.addAttribute("auths", auths);
+		
+		return "admin/user-form";
+	}
+	
 	// delete
 	@GetMapping("delete/employee")
 	public String deleteEmployee(@RequestParam ("emplId") int id) {
 		adminDAO.deleteEmployee(id);
-		
 		return "redirect:/admins/show/employees/get";
-		
 	}
 	
 	@GetMapping("deletion/book/deletion/del/quantity")

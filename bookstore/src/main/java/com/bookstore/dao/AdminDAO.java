@@ -32,14 +32,55 @@ public class AdminDAO {
 	}
 	
 	// selects and getters
+	
+	@Transactional
+	public List<User> getAllUsers(){
+		List<User> users = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct u.* from users u", User.class);
+			users = theQuery.getResultList();
+		}catch(NoResultException nr) {
+			
+		}
+		return users;
+	}
+	
 	@Transactional
 	public User getUserByUsername(String username) {
-		User user = new User();
+		User user = null;
 		Query theQuery = entityManager.createQuery("select distinct u from users u inner join fetch u.roles WHERE u.username = :u", User.class);
 		theQuery.setParameter("u", username);
 		user = (User) theQuery.getSingleResult();
 		return user;
 	}
+	
+	@Transactional
+	public User getUserById(int id) {
+		User user = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct u.* from users u WHERE u.id = :theid", User.class);
+			theQuery.setParameter("theid", id);
+			user = (User) theQuery.getSingleResult();
+			
+		}catch(NoResultException nr) {
+			
+		}
+		return user;
+	}
+	
+	@Transactional
+	public List<User> getUsersByUsername(String username) {
+		List<User> users = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct u.* from users u WHERE u.username = :theusername", User.class);
+			theQuery.setParameter("theusername", username);
+			users = theQuery.getResultList();
+		}catch(NoResultException nr) {
+			
+		}
+		return users;
+	}
+
 	
 	@Transactional
 	public List<Authority> getAllAuthorities() {
@@ -68,6 +109,33 @@ public class AdminDAO {
 		theQuery.setParameter("theId", id);
 		return (Author) theQuery.getSingleResult();
 	}
+	@Transactional
+	public Author getAuthorByDetails(String name, String surname) {
+		Author author = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct a.* from author a where a.name=:thename and a.surname=:thesurname",Author.class);
+			theQuery.setParameter("thename", name);
+			theQuery.setParameter("thesurname", surname);
+			author = (Author) theQuery.getSingleResult();
+		}catch (NoResultException nr) {
+			
+		}
+		return author;	
+	}
+	
+	@Transactional
+	public List<Author> getAuthorsByName(String surname) {
+		List<Author> authors = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct a.* from author a left join author_connector ac on a.authorid=ac.author_idC where a.surname=:thesurname",Author.class);
+			theQuery.setParameter("thesurname", surname);
+			authors = theQuery.getResultList();
+		}catch (NoResultException nr) {
+			
+		}
+		return authors;	
+	}
+	
 	@Transactional
 	public List<Book> getAuthorBooks(int id) {
 		Query theQuery = entityManager.createQuery("select distinct b from book b inner join fetch b.authors a where a.id=: theid",Book.class);
@@ -149,6 +217,7 @@ public class AdminDAO {
 		BookCopy dBookCopy = entityManager.merge(bookCopy);
 		bookCopy.setId(dBookCopy.getId());
 	}
+	
 	// deletion
 	@Transactional
 	public void deleteEmployee(int id) {

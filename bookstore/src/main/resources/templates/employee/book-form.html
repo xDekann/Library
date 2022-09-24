@@ -12,6 +12,7 @@
 <body>
 	<p class="h1 mb-4 ml-1 mt-1">Add book</p>
 	<form th:action="@{/admins/creation/book/creation}" th:object="${book}" method="POST">
+		<a th:href="@{/admins/show/books/get}" class="btn btn-primary btn-sm col-sm-3 mb-4"> Back </a>
 		<div class="form-group row">
 			<label class="col-sm-1 col-form-label ml-1" for="isbn">Isbn</label>
 			<div class="col-sm-5">
@@ -42,8 +43,11 @@
 				<input type="text" th:field="*{borrowTime}" placeholder="7" th:required="required" id="borrowTime">
 			</div>
 		</div>
-		<div th:object="${author}">
-			<input type="hidden" th:value="${author.id}" th:name="authId">
+		<div class="form-group row">
+			<label class="col-sm-1 col-form-label ml-1" for="nicknames">Authors</label>
+			<div class="col-sm-5">
+				<textarea rows="10" cols="100" th:name="nicknames"  placeholder="John Doe,Will Smith,Edward Brown" th:required="required" id="nicknames"></textarea>
+			</div>
 		</div>
 		<button class="btn btn-primary col-sm-3 ml-1" type="submit">Submit</button>
 	</form>

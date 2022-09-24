@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<HTML lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<title>Employees listing</title>
+
+</head>
+<body>
+<div class="container">
+	<h3 class="ml-2">Users</h3>
+		<div class="form-group row">
+			<form th:action="@{/admins/show/users/get/viasearch}" method="GET">
+				<div class="col-sm-5 d-inline ml-2">
+					<a th:href="@{/admins/start}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
+					<a th:href="@{/admins/creation/user/form}" class="btn btn-primary btn-sm mb-2"> Add User</a>
+					<a th:href="@{/admins/show/users/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
+					<button class="btn btn-primary btn-sm mb-2" type="submit">Search -></button>
+					<input type="text" th:name="userS" placeholder="Username">
+					</div>
+			</form>
+		</div>
+	<table class="table table-bordered table-striped">
+		<thead class="thead-dark">
+			<tr>
+				<th>Name</th>
+				<th>Is enabled?</th>
+				<th>Options</th>
+			</tr>
+		</thead>
+		
+		<tbody>
+			<tr th:each="user : ${users}">
+				<td th:text="${user.username}"/>
+				<td th:text="${user.enabled}"/>	
+				<td>
+					<a th:href="@{/admins/update/user/enable(userId=${user.id})}" class="btn btn-info btn-sm" >Enable user</a>
+					<a th:href="@{/admins/update/user/disable(userId=${user.id})}" class="btn btn-danger btn-sm" >Disable user</a>
+					<a th:href="@{/admins/update/user/update(userId=${user.id})}" class="btn btn-info btn-sm" >Update user</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</HTML>
