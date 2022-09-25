@@ -42,9 +42,11 @@ public class Book {
 			)
 	private List<Author> authors;
 	
+	
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@JoinColumn(name = "fk_book")
 	private List<BookCopy> copies;
+	
 	
 	public Book() {
 	}

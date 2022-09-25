@@ -387,6 +387,7 @@ public class AdminController {
 			}	
 		});
 		
+		
 		theModel.addAttribute("rents", rents);
 		theModel.addAttribute("clientId", id);
 		
