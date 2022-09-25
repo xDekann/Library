@@ -14,11 +14,11 @@
 	<h3 class="ml-2">Clients</h3>
 	
 	<div class="form-group row">
-		<form th:action="@{/admins/show/clients/get/viasearch}" method="GET">
+		<form th:action="@{/employees/show/clients/get/viasearch}" method="GET">
 			<div class="col-sm-5 d-inline ml-2">
-				<a th:href="@{/admins/start}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
-				<a th:href="@{/admins/creation/client/form}" class="btn btn-primary btn-sm mb-2"> Add Client</a>
-				<a th:href="@{/admins/show/clients/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
+				<a th:href="@{/home}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
+				<a th:href="@{/employees/creation/client/form}" class="btn btn-primary btn-sm mb-2"> Add Client</a>
+				<a th:href="@{/employees/show/clients/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
 				<button class="btn btn-primary btn-sm mb-2" type="submit">Search -></button>
 				<input type="text" th:name="clientS" placeholder="example@mail.com">
 				</div>
@@ -40,9 +40,9 @@
 				<td th:text="${client.surname}"/>
 				<td th:text="${client.email}"/>
 				<td>
-					<a th:href="@{/admins/update/client/form(clientId=${client.id})}" class="btn btn-info btn-sm" >Update</a>
-					<a th:href="@{/admins/delete/client/delete(clientId=${client.id})}"  class="btn btn-danger btn-sm" >Delete</a>
-					<a th:href="@{/admins/show/clients/rents(clientId=${client.id})}" class="btn btn-info btn-sm" >Show Rents</a>
+					<a th:href="@{/employees/update/client/form(clientId=${client.id})}" class="btn btn-info btn-sm" >Update</a>
+					<a th:href="@{/employees/delete/client/delete(clientId=${client.id})}"  class="btn btn-danger btn-sm" >Delete</a>
+					<a th:href="@{/employees/show/clients/rents(clientId=${client.id})}" class="btn btn-info btn-sm" >Show Rents</a>
 				</td>
 			</tr>
 		</tbody>

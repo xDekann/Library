@@ -41,9 +41,12 @@
 		<div th:object="${auths}">
 			<span class="form-check form-check-inline ml-2 mb-2" th:each="r : ${auths}">
 				<div th:if="${r.authorityName} == 'ROLE_ADMIN'">
-					<input class="form-check-input" type="checkbox" th:name="auths" th:text="${r.authorityName}" th:value="${r.authorityName}" th:checked="checked">
+					<input class="form-check-input" type="checkbox" th:name="auths" th:text="${r.authorityName}" th:value="${r.authorityName}">
 				</div>
 				<div th:if="${r.authorityName} == 'ROLE_EMPLOYEE'">
+					<input class="form-check-input" type="checkbox" th:name="auths" th:text="${r.authorityName}" th:value="${r.authorityName}">
+				</div>
+				<div th:if="${r.authorityName} == 'ROLE_CLIENT'">
 					<input class="form-check-input" type="checkbox" th:name="auths" th:text="${r.authorityName}" th:value="${r.authorityName}">
 				</div>
 			</span>

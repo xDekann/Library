@@ -11,8 +11,8 @@
 </head>
 <body>
 	<p class="h1 mb-4 ml-1 mt-1">Add Author</p>
-	<form th:action="@{/admins/creation/author/creation}" th:object="${author}" method="POST">
-		<a th:href="@{/admins/show/authors/get}" class="btn btn-primary btn-sm col-sm-3 mb-4"> Back </a>
+	<form th:action="@{/employees/creation/author/creation}" th:object="${author}" method="POST">
+		<a th:href="@{/employees/show/authors/get}" class="btn btn-primary btn-sm col-sm-3 mb-4"> Back </a>
 		<input type="hidden" th:field="*{id}">
 		<div class="form-group row">
 			<label class="col-sm-1 col-form-label ml-1" for="name">Name</label>

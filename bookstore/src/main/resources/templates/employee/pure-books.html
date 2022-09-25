@@ -13,11 +13,11 @@
 <body>
 	<h3 class="ml-2">Books</h3>
 	<div class="form-group row">
-		<form th:action="@{/admins/show/books/get/viasearch}" method="GET">
+		<form th:action="@{/employees/show/books/get/viasearch}" method="GET">
 			<div class="col-sm-5 d-inline ml-2">
-				<a th:href="@{/admins/start}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
-				<a th:href="@{/admins/creation/book/form}" class="btn btn-primary btn-sm mb-2" >Add book</a>
-				<a th:href="@{/admins/show/books/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
+				<a th:href="@{/home}" class="btn btn-primary btn-sm mb-2"> Back to start </a>
+				<a th:href="@{/employees/creation/book/form}" class="btn btn-primary btn-sm mb-2" >Add book</a>
+				<a th:href="@{/employees/show/books/get}" class="btn btn-primary btn-sm mb-2"> Refresh </a>
 				<button class="btn btn-primary btn-sm mb-2" type="submit">Search -></button>
 				<input type="text" th:name="titleS" placeholder="Book name">
 				<span th:if="${#strings.equals(quantity, '1')}" th:text="'Selected book has ' + ${quantityVal} + ' available to borrow copie(s)'"></span>
@@ -46,9 +46,9 @@
 					</span>
 				</td>
 				<td>
-					<a th:href="@{/admins/show/books/get/available(bookId=${book.id})}" class="btn btn-info btn-sm" >Check availability</a>
-					<a th:href="@{/admins/creation/book/creation/add/quantity(bookId=${book.id})}" class="btn btn-info btn-sm" >Add quantity (newly obtained)</a>
-					<a th:href="@{/admins/deletion/book/deletion/del/quantity(bookId=${book.id})}" class="btn btn-danger btn-sm" >Remove quantity (destroyed)</a>
+					<a th:href="@{/employees/show/books/get/available(bookId=${book.id})}" class="btn btn-info btn-sm" >Check availability</a>
+					<a th:href="@{/employees/creation/book/creation/add/quantity(bookId=${book.id})}" class="btn btn-info btn-sm" >Add quantity (newly obtained)</a>
+					<a th:href="@{/employees/deletion/book/deletion/del/quantity(bookId=${book.id})}" class="btn btn-danger btn-sm" >Remove quantity (destroyed)</a>
 				</td>
 			</tr>
 		</tbody>

@@ -73,9 +73,8 @@ public class SecurityConfig{
 		return http
 				.authorizeRequests(configurer->
 								   configurer.antMatchers("/").permitAll()
-								   			 .antMatchers("/home").hasAnyRole("STUDENT","TEACHER","ADMIN")
-								   			 .antMatchers("/students/**").hasRole("STUDENT")
-								   			 .antMatchers("/teachers/**").hasRole("TEACHER")
+								   			 .antMatchers("/home").hasAnyRole("ADMIN","EMPLOYEE")
+								   			 .antMatchers("/employees/**").hasAnyRole("ADMIN","EMPLOYEE")
 								   			 .antMatchers("/admins/**").hasRole("ADMIN"))
 				.formLogin(configurer->configurer.loginPage("/auth/showLoginPage")
 						 .loginProcessingUrl("/authenticateUser")

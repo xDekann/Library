@@ -7,7 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<title>Client listing</title>
+	<title>Client rents</title>
 </head>
 <body>
 <div class="container">
@@ -15,8 +15,8 @@
 	
 	<div class="form-group row">
 			<div class="col-sm-5 d-inline ml-2">
-				<a th:href="@{/admins/show/clients/get}" class="btn btn-primary btn-sm mb-2"> Back </a>
-				<a th:href="@{/admins/creation/clients/rent(clientId=${clientId})}" class="btn btn-primary btn-sm mb-2"> Add Rent</a>
+				<a th:href="@{/employees/show/clients/get}" class="btn btn-primary btn-sm mb-2"> Back </a>
+				<a th:href="@{/employees/creation/clients/rent(clientId=${clientId})}" class="btn btn-primary btn-sm mb-2"> Add Rent</a>
 			</div>
 	</div>
 	<table class="table table-bordered table-striped">
@@ -37,9 +37,9 @@
 				<td th:text="${rent.endDateOfRent}"/>
 				<td th:text="${rent.penalty}"/>
 				<td>
-					<a th:href="@{/admins/delete/client/cancelrent/{clientId}/{rentId}(clientId=${clientId}, rentId=${rent.id})}"  class="btn btn-info btn-sm" >Cancel rent</a>
-					<a th:href="@{/admins/delete/client/cancelpenal/{clientId}/{rentId}(clientId=${clientId}, rentId=${rent.id})}" class="btn btn-danger btn-sm" >Cancel penalty</a>
-					<a th:href="@{/admins/create/client/createpenal/{clientId}/{rentId}(clientId=${clientId}, rentId=${rent.id})}" class="btn btn-danger btn-sm" >Add penalty</a>
+					<a th:href="@{/employees/delete/client/cancelrent/{clientId}/{rentId}(clientId=${clientId}, rentId=${rent.id})}"  class="btn btn-info btn-sm" >Cancel rent</a>
+					<a th:href="@{/employees/delete/client/cancelpenal/{clientId}/{rentId}(clientId=${clientId}, rentId=${rent.id})}" class="btn btn-danger btn-sm" >Cancel penalty</a>
+					<a th:href="@{/employees/create/client/createpenal/{clientId}/{rentId}(clientId=${clientId}, rentId=${rent.id})}" class="btn btn-danger btn-sm" >Add penalty</a>
 				</td>
 			</tr>
 		</tbody>

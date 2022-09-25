@@ -13,9 +13,9 @@
 <body>
 	<h3 class="ml-2">Book rent (search for a book)</h3>
 	<div class="form-group row">
-		<form th:action="@{/admins/creation/clients/rent}" method="GET">
+		<form th:action="@{/employees/creation/clients/rent}" method="GET">
 			<div class="col-sm-5 d-inline ml-2">
-				<a th:href="@{/admins/show/clients/get}" class="btn btn-primary btn-sm mb-2"> Back to clients </a>
+				<a th:href="@{/employees/show/clients/get}" class="btn btn-primary btn-sm mb-2"> Back to clients </a>
 				<button class="btn btn-primary btn-sm mb-2" type="submit">Search -></button>
 				<input type="text" th:name="titleCopy" placeholder="Title">
 				<input type="text" th:name="phCopy" placeholder="Publishing house">
@@ -42,7 +42,7 @@
 				<td th:text="${copy.isbn}"/>	
 				<td th:text="${copy.status}">
 				<td>
-					<a th:href="@{/admins/creation/clients/addrent/{copyId}/{clientId}(copyId=${copy.id}, clientId=${clientId})}" class="btn btn-info btn-sm" >Add to rent</a>
+					<a th:href="@{/employees/creation/clients/addrent/{copyId}/{clientId}(copyId=${copy.id}, clientId=${clientId})}" class="btn btn-info btn-sm" >Add to rent</a>
 				</td>
 			</tr>
 		</tbody>
