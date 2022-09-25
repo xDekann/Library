@@ -382,7 +382,8 @@ public class AdminController {
 		Collections.sort(rents, new Comparator<BookRent>(){
 			@Override
 			public int compare(BookRent o1, BookRent o2) {
-				return o1.getDateOfRent().compareTo(o2.getDateOfRent())*-1;
+				
+				return o2.getId()-o1.getId();
 			}	
 		});
 		
