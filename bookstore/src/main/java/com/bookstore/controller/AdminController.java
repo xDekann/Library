@@ -2,10 +2,17 @@ package com.bookstore.controller;
 
 
 import java.lang.reflect.Array;
+import java.sql.Date;
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.time.temporal.ChronoUnit;
 
 import org.aspectj.weaver.NewConstructorTypeMunger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +21,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.bookstore.dao.AdminDAO;
 import com.bookstore.entity.Author;
 import com.bookstore.entity.Authority;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.BookCopy;
+import com.bookstore.entity.BookRent;
 import com.bookstore.entity.Client;
 import com.bookstore.entity.Employee;
 import com.bookstore.entity.User;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+
+import ch.qos.logback.classic.pattern.Util;
 
 
 @Controller
@@ -155,23 +168,21 @@ public class AdminController {
 			separateDetails = Arrays.asList(author.split(" "));
 			name = separateDetails.get(0);
 			surname = separateDetails.get(1);
-			System.out.println(name+" "+surname);
 			dbAuthor = adminDAO.getAuthorByDetails(name, surname);
 			if(dbAuthor == null) {
 				dbAuthor = new Author();
 				dbAuthor.setName(name);
 				dbAuthor.setSurname(surname);
-				dbAuthor.addBook(book);
-				adminDAO.addAuthor(dbAuthor);
-			}else {
-				dbAuthor.addBook(book);
+				//book.addAuthor(dbAuthor);
+				//adminDAO.addAuthor(dbAuthor);
 			}
+			book.addAuthor(dbAuthor);
 			dbAuthor=null;
 		}
 		
 		adminDAO.addBook(book);
 		
-		return "redirect:/admins/show/authors/get";
+		return "redirect:/admins/show/books/get";
 	}
 	@GetMapping("creation/book/creation/add/quantity")
 	public String addBookQuantity(@RequestParam ("bookId") int id, Model theModel) {
@@ -182,6 +193,7 @@ public class AdminController {
 		bookCopy.setFkBook(id);
 		bookCopy.setIsbn(book.getIsbn());
 		bookCopy.setStatus(true);
+		bookCopy.setTitle(book.getTitle());
 		
 		adminDAO.addBookCopy(bookCopy);
 		//book.addCopy(bookCopy);
@@ -219,6 +231,63 @@ public class AdminController {
 		return "redirect:/admins/show/clients/get";
 	}
 	
+	@GetMapping("creation/clients/rent")
+	public String createRent(@RequestParam("clientId") int id,
+			@RequestParam(value="titleCopy", required=false) String titleCopy,
+			@RequestParam(value="phCopy", required = false) String phCopy,
+			@RequestParam(value="yopCopy", required = false) String yopCopy,
+			Model theModel) {
+		
+		// show copies of book that meets the parameters
+		List<BookCopy> copies = adminDAO.getCopiesForRent(titleCopy, phCopy, yopCopy);
+		
+		theModel.addAttribute("copies",copies);
+		theModel.addAttribute("clientId",id);
+		
+		return "employee/show-bcopies";
+	}
+	// ----------------------------------------------------------------------------
+	@GetMapping("creation/clients/addrent/{copyId}/{clientId}")
+	public String addRentToClient(@PathVariable("copyId") int copyId,
+			@PathVariable("clientId") int clientId, RedirectAttributes redirectAttributes) {
+		
+		System.out.print("in double curly");
+		System.out.println("client id:"+clientId);
+		System.out.println("copy id:"+copyId);
+		
+		// final rent addition
+		BookCopy copy = adminDAO.getBookCopyById(copyId);
+		Client client = adminDAO.getClientById(clientId);
+		copy.setStatus(false);
+		BookRent rent = new BookRent();
+		rent.setId(0);
+		rent.setTitle(copy.getTitle());
+		rent.setDateOfRent(new Date(System.currentTimeMillis()));
+		rent.setPenalty(false);
+		
+		copy.addRent(rent);
+		client.addRent(rent);
+		
+		adminDAO.addRent(rent);
+		
+		redirectAttributes.addAttribute("clientId",clientId);
+		
+		return "redirect:/admins/show/clients/rents";
+	}
+	
+	@GetMapping("create/client/createpenal/{clientId}/{rentId}")
+	public String addPenal(@PathVariable("rentId") int rentId,
+							 @PathVariable("clientId") int clientId,
+							 RedirectAttributes redirectAttributes) {
+		
+		BookRent rent = adminDAO.getRentById(rentId);
+		rent.setPenalty(true);
+		
+		adminDAO.addRent(rent);
+		
+		redirectAttributes.addAttribute("clientId",clientId);
+		return "redirect:/admins/show/clients/rents";
+	}
 	// select/show
 	
 	@GetMapping("show/users/get")
@@ -305,6 +374,24 @@ public class AdminController {
 		theModel.addAttribute("clients",adminDAO.getClientsByEmail(email));
 		return "employee/show-clients";
 	}
+	@GetMapping("show/clients/rents")
+	public String showClientsRents(@RequestParam("clientId") int id, Model theModel) {
+		
+		List<BookRent> rents = adminDAO.getClientRents(id);
+		
+		Collections.sort(rents, new Comparator<BookRent>(){
+			@Override
+			public int compare(BookRent o1, BookRent o2) {
+				return o1.getDateOfRent().compareTo(o2.getDateOfRent())*-1;
+			}	
+		});
+		
+		theModel.addAttribute("rents", rents);
+		theModel.addAttribute("clientId", id);
+		
+		
+		return "employee/show-rents";
+	}
 	// update
 	@GetMapping("update/employee/form")
 	public String updateEmployee(@RequestParam("emplId") int id, Model theModel) {
@@ -362,7 +449,7 @@ public class AdminController {
 	public String deleteBookQuantity(@RequestParam ("bookId") int id, Model theModel) {
 		
 		Book book = adminDAO.getBookById(id);
-		BookCopy bookCopy = adminDAO.getBookCopyById(book.getId());
+		BookCopy bookCopy = adminDAO.getBookCopyByBookId(book.getId());
 		
 		if(bookCopy!=null) {
 			adminDAO.deleteBookCopy(bookCopy.getId());
@@ -386,6 +473,49 @@ public class AdminController {
 		adminDAO.deleteClient(id);
 		
 		return "redirect:/admins/show/clients/get";
+	}
+	@GetMapping("delete/client/cancelrent/{clientId}/{rentId}")
+	public String cancelRent(@PathVariable("rentId") int rentId,
+							 @PathVariable("clientId") int clientId,
+							 RedirectAttributes redirectAttributes) {
+		
+		//System.out.println("rentId:"+rentId);
+		//System.out.println("clientId:"+clientId);
+		
+		
+		BookRent rent = adminDAO.getRentById(rentId);
+		// update end date
+		rent.setEndDateOfRent(new Date(System.currentTimeMillis()));
+		// get difference between start-end
+		LocalDate startDate = rent.getDateOfRent().toLocalDate();
+		LocalDate endDate = rent.getEndDateOfRent().toLocalDate();
+		// if the difference exceeds 7 days, add penalty
+		long difference=ChronoUnit.DAYS.between(startDate, endDate);
+		if(difference>7) {
+			rent.setPenalty(true);
+		}
+
+		System.out.println(difference);
+		adminDAO.getRentParentCopy(rentId).setStatus(true);
+		adminDAO.addRent(rent);
+		
+		redirectAttributes.addAttribute("clientId",clientId);
+		return "redirect:/admins/show/clients/rents";
+		
+	}
+	
+	@GetMapping("delete/client/cancelpenal/{clientId}/{rentId}")
+	public String cancelPenal(@PathVariable("rentId") int rentId,
+							 @PathVariable("clientId") int clientId,
+							 RedirectAttributes redirectAttributes) {
+		
+		BookRent rent = adminDAO.getRentById(rentId);
+		rent.setPenalty(false);
+		
+		adminDAO.addRent(rent);
+		
+		redirectAttributes.addAttribute("clientId",clientId);
+		return "redirect:/admins/show/clients/rents";
 	}
 	
 	// other

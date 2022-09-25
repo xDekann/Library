@@ -32,8 +32,6 @@ public class Book {
 	private String publishingHouse;
 	@Column(name="year_of_publishment")
 	private int yOfPublishment;
-	@Column(name="borrow_time")
-	private int borrowTime;
 	
 	@ManyToMany(fetch=FetchType.LAZY,
 			cascade = CascadeType.ALL)
@@ -93,12 +91,6 @@ public class Book {
 	public void setyOfPublishment(int yOfPublishment) {
 		this.yOfPublishment = yOfPublishment;
 	}
-	public int getBorrowTime() {
-		return borrowTime;
-	}
-	public void setBorrowTime(int borrowTime) {
-		this.borrowTime = borrowTime;
-	}
 
 	public void addAuthor(Author author) {
 		if(authors==null) authors = new ArrayList<>();
@@ -122,7 +114,7 @@ public class Book {
 	@Override
 	public String toString() {
 		return "Book [id=" + id + ", isbn=" + isbn + ", title=" + title + ", publishingHouse=" + publishingHouse
-				+ ", yOfPublishment=" + yOfPublishment + ", borrowTime=" + borrowTime + ", authors=" + authors + "]";
+				+ ", yOfPublishment=" + yOfPublishment + ", borrowTime=" + ", authors=" + authors + "]";
 	}
 	
 }

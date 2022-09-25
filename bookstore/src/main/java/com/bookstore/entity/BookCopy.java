@@ -26,6 +26,8 @@ public class BookCopy {
 	private int id;
 	@Column(name="isbn")
 	private long isbn;
+	@Column(name="title")
+	private String title;
 	@Column(name="status")
 	private boolean status;
 	@Column(name="fk_book")
@@ -58,6 +60,14 @@ public class BookCopy {
 
 	public long getIsbn() {
 		return isbn;
+	}
+	
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public void setIsbn(long isbn) {

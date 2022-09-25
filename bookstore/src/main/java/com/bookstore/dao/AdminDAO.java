@@ -16,6 +16,7 @@ import com.bookstore.entity.Author;
 import com.bookstore.entity.Authority;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.BookCopy;
+import com.bookstore.entity.BookRent;
 import com.bookstore.entity.Client;
 import com.bookstore.entity.Employee;
 import com.bookstore.entity.User;
@@ -191,10 +192,22 @@ public class AdminDAO {
 		
 	}
 	@Transactional
-	public BookCopy getBookCopyById(int id) {
+	public BookCopy getBookCopyByBookId(int id) {
 		BookCopy bookCopy = null;
 		try {
 			Query theQuery = entityManager.createNativeQuery("select distinct bc.* from book_copy bc where bc.fk_book=:theid limit 1", BookCopy.class);
+			theQuery.setParameter("theid", id);
+			bookCopy = (BookCopy) theQuery.getSingleResult();
+		}catch(NoResultException nr) {
+			
+		}
+		return bookCopy;	
+	}
+	@Transactional
+	public BookCopy getBookCopyById(int id) {
+		BookCopy bookCopy = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct bc.* from book_copy bc where bc.copyid=:theid limit 1", BookCopy.class);
 			theQuery.setParameter("theid", id);
 			bookCopy = (BookCopy) theQuery.getSingleResult();
 		}catch(NoResultException nr) {
@@ -237,6 +250,61 @@ public class AdminDAO {
 		}
 		return client;
 	}
+	@Transactional
+	public List<BookRent> getClientRents(int id){
+		List<BookRent> rents = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct br.* from book_rent br where br.clientidR=:theid",BookRent.class);
+			theQuery.setParameter("theid", id);
+			rents = theQuery.getResultList();
+		}catch(NoResultException nr) {
+			
+		}
+		return rents;
+	}
+	@Transactional
+	public List<BookCopy> getCopiesForRent(String title, String ph, String yop){
+		List<BookCopy> copies = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select bc.* from book_copy bc"
+					+ " inner join book b on bc.fk_book = b.bookid"
+					+ " where b.title=:thetitle and b.publishing_house=:theph"
+					+ " and b.year_of_publishment=:yop"
+					+ " and bc.status=true",BookCopy.class);	
+			theQuery.setParameter("thetitle", title);
+			theQuery.setParameter("theph", ph);
+			theQuery.setParameter("yop", yop);
+			copies = theQuery.getResultList();
+		}catch(NoResultException nr) {
+			
+		}
+		return copies;
+	}
+	@Transactional
+	public BookRent getRentById(int id) {
+		BookRent rent = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct br.* from book_rent br where br.rentid=:theid", BookRent.class);
+			theQuery.setParameter("theid", id);
+			rent = (BookRent) theQuery.getSingleResult();
+			
+		}catch(NoResultException nr) {
+			
+		}
+		return rent;
+	}
+	@Transactional
+	public BookCopy getRentParentCopy(int id){
+		BookCopy copy = null;
+		try {
+			Query theQuery = entityManager.createNativeQuery("select distinct bc.* from book_copy bc inner join book_rent br on bc.copyid=br.copyidR where br.rentid=:theid" , BookCopy.class);
+			theQuery.setParameter("theid", id);
+			copy = (BookCopy) theQuery.getSingleResult();
+		}catch(NoResultException nr) {
+			
+		}
+		return copy;
+	}
 	// creations
 	// additions (merge = add/update)
 	@Transactional
@@ -269,6 +337,11 @@ public class AdminDAO {
 	public void addClient(Client client) {
 		Client dbClient = entityManager.merge(client);
 		client.setId(dbClient.getId());
+	}
+	@Transactional
+	public void addRent(BookRent rent) {
+		BookRent dbRent = entityManager.merge(rent);
+		rent.setId(dbRent.getId());
 	}
 	// deletion
 	@Transactional

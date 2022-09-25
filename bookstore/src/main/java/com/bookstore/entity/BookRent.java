@@ -19,10 +19,12 @@ public class BookRent {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="rentid")
 	private int id;
+	@Column(name="title")
+	private String title;
 	@Column(name="date_of_rent")
-	private Date dateOfRentDate;
-	@Column(name="en_date_of_rent")
-	private Date end_date_of_rent;
+	private Date dateOfRent;
+	@Column(name="end_date_of_rent")
+	private Date endDateOfRent;
 	@Column(name="penalty")
 	private boolean penalty;
 	
@@ -37,6 +39,7 @@ public class BookRent {
 	public BookRent() {
 	}
 
+	
 	public int getId() {
 		return id;
 	}
@@ -44,21 +47,31 @@ public class BookRent {
 	public void setId(int id) {
 		this.id = id;
 	}
-
-	public Date getDateOfRentDate() {
-		return dateOfRentDate;
+	
+	public String getTitle() {
+		return title;
 	}
 
-	public void setDateOfRentDate(Date dateOfRentDate) {
-		this.dateOfRentDate = dateOfRentDate;
+
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
-	public Date getEnd_date_of_rent() {
-		return end_date_of_rent;
+
+	public Date getDateOfRent() {
+		return dateOfRent;
 	}
 
-	public void setEnd_date_of_rent(Date end_date_of_rent) {
-		this.end_date_of_rent = end_date_of_rent;
+	public void setDateOfRent(Date dateOfRent) {
+		this.dateOfRent = dateOfRent;
+	}
+
+	public Date getEndDateOfRent() {
+		return endDateOfRent;
+	}
+
+	public void setEndDateOfRent(Date endDateOfRent) {
+		this.endDateOfRent = endDateOfRent;
 	}
 
 	public boolean isPenalty() {
