@@ -10,7 +10,9 @@
 	<title>Access denied!</title>
 </head>
 <body>
-	<h3>Insufficient privileges</h3>
-	<a th:href="@{/auth/showLoginPage}">Proceed to log in</a>
+	<h3 class="ml-2">Insufficient privileges</h3>
+	<div class="alert alert-danger ml-2">
+		<a th:href="@{/auth/showLoginPage}" class="alert-link">Proceed to log in</a>
+	</div>
 </body>
 </html>

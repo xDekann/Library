@@ -24,26 +24,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig{
 	
-	/*
-	@Autowired
-	private DataSource securityDataSource;
-	*/
-	
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new BookUserDetailsService();
 	}
-	
-	
-	// setting mysql connection
-	/*
-	@Bean
-	public UserDetailsManager userDetailsManager() {
-		return new JdbcUserDetailsManager(securityDataSource);
-	}
-	*/
-	
-	
 	// used for DB purpose password encryption
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -51,18 +35,6 @@ public class SecurityConfig{
     }
     
     // authorization management
-	
-	/*
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
-        //authProvider.setPasswordEncoder(passwordEncoder());
-         
-        return authProvider;
-    }
-    */
-	
 	@Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

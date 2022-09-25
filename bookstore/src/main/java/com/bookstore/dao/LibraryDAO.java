@@ -10,7 +10,6 @@ import javax.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.context.Theme;
 
 import com.bookstore.entity.Author;
 import com.bookstore.entity.Authority;
@@ -20,21 +19,19 @@ import com.bookstore.entity.BookRent;
 import com.bookstore.entity.Client;
 import com.bookstore.entity.Employee;
 import com.bookstore.entity.User;
-import com.bookstore.security.BookUserDetailsService;
 
 
 @Repository
-public class AdminDAO {
+public class LibraryDAO {
 
 	private EntityManager entityManager;
 	
 	@Autowired
-	public AdminDAO(EntityManager entityManager) {
+	public LibraryDAO(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 	
 	// selects and getters
-	
 	@Transactional
 	public List<User> getAllUsers(){
 		List<User> users = null;
@@ -46,12 +43,11 @@ public class AdminDAO {
 		}
 		return users;
 	}
-	
 	@Transactional
 	public User getUserByUsername(String username) {
 		User user = null;
 		try {
-			Query theQuery = entityManager.createQuery("select distinct u from users u inner join fetch u.roles WHERE u.username = :u", User.class);
+			Query theQuery = entityManager.createQuery("select distinct u from users u inner join fetch u.roles WHERE u.username = :u", User.class).setMaxResults(1);
 			theQuery.setParameter("u", username);
 			user = (User) theQuery.getSingleResult();
 		}catch(NoResultException nr) {
@@ -59,7 +55,6 @@ public class AdminDAO {
 		}
 		return user;
 	}
-	
 	@Transactional
 	public User getUserById(int id) {
 		User user = null;
@@ -73,7 +68,6 @@ public class AdminDAO {
 		}
 		return user;
 	}
-	
 	@Transactional
 	public List<User> getUsersByUsername(String username) {
 		List<User> users = null;
@@ -86,8 +80,6 @@ public class AdminDAO {
 		}
 		return users;
 	}
-
-	
 	@Transactional
 	public List<Authority> getAllAuthorities() {
 		List<Authority> authorities = null;
@@ -99,7 +91,6 @@ public class AdminDAO {
 		}
 		return authorities;
 	}
-	
 	@Transactional
 	public Authority getAuthority(String name) {
 		Authority authority = null;
@@ -112,7 +103,6 @@ public class AdminDAO {
 		}
 		return authority;
 	}
-	
 	@Transactional
 	public List<Author> getAllAuthors(){
 		List<Author> authors = null;
@@ -149,7 +139,6 @@ public class AdminDAO {
 		}
 		return author;	
 	}
-	
 	@Transactional
 	public List<Author> getAuthorsBySurname(String surname) {
 		List<Author> authors = null;
@@ -162,7 +151,6 @@ public class AdminDAO {
 		}
 		return authors;	
 	}
-	
 	@Transactional
 	public List<Employee> getEmployeesBySurname(String surname) {
 		List<Employee> employees = null;
@@ -175,7 +163,6 @@ public class AdminDAO {
 		}
 		return employees;	
 	}
-	
 	@Transactional
 	public List<Book> getAuthorBooks(int id) {
 		List<Book> books = null;
@@ -211,7 +198,6 @@ public class AdminDAO {
 		}
 		return employee;
 	}
-	
 	@Transactional
 	public List<Book> getAllBooks() {
 		List<Book> books = null;

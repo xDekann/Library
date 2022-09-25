@@ -15,6 +15,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
 
 @Table(name="book")
 @Entity(name="book")
@@ -26,11 +29,15 @@ public class Book {
 	private int id;
 	@Column(name="isbn")
 	private long isbn;
+	@NotEmpty(message = "must not be empty")
 	@Column(name="title")
 	private String title;
+	@NotEmpty(message = "must not be empty")
 	@Column(name="publishing_house")
 	private String publishingHouse;
 	@Column(name="year_of_publishment")
+	@NotEmpty(message = "must not be empty")
+	@Min(value = 2007, message = "year must be 2007 or higher")
 	private int yOfPublishment;
 	
 	@ManyToMany(fetch=FetchType.LAZY,
@@ -110,7 +117,6 @@ public class Book {
 	public void addCopy(BookCopy theCopy) {
 		if(copies==null) copies = new ArrayList<>();
 		copies.add(theCopy);
-		//theCopy.setBook(this);
 	}
 	
 	@Override
@@ -118,5 +124,4 @@ public class Book {
 		return "Book [id=" + id + ", isbn=" + isbn + ", title=" + title + ", publishingHouse=" + publishingHouse
 				+ ", yOfPublishment=" + yOfPublishment + ", borrowTime=" + ", authors=" + authors + "]";
 	}
-	
 }

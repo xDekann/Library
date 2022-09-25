@@ -18,6 +18,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 @Table(name="client")
 @Entity(name="client")
@@ -28,10 +30,14 @@ public class Client {
 	@Column(name="clientid")
 	private int id;
 	@Column(name="name")
+	@NotEmpty(message = "must not be empty")
 	private String name;
 	@Column(name="surname")
+	@NotEmpty(message = "must not be empty")
 	private String surname;
 	@Column(name="email")
+	@NotEmpty(message = "must not be empty")
+	@Email(message = "provide valid email")
 	private String email;
 	
 	@ManyToMany(fetch=FetchType.LAZY,
@@ -43,17 +49,6 @@ public class Client {
 			uniqueConstraints = @UniqueConstraint(columnNames = {"user_id_springC","user_id_userC"})
 			)
 	private Set<User> users_client;
-	/*
-	@ManyToMany(fetch=FetchType.LAZY,
-			cascade = CascadeType.ALL)
-	@JoinTable(
-			name="book_rent",
-			joinColumns=@JoinColumn(name="clientidR"),
-			inverseJoinColumns = @JoinColumn(name="copyidR"),
-			uniqueConstraints = @UniqueConstraint(columnNames = {"clientidR","copyidR"})
-			)
-	private List<BookCopy> copiesBorrowed;
-	*/
 	
 	@OneToMany(mappedBy = "client")
 	private List<BookRent> clientRents;
@@ -110,14 +105,7 @@ public class Client {
 		if(users_client==null) users_client = new HashSet<>();
 		users_client.add(user);
 	}
-	
-	/*
-	public void addCopy(BookCopy copy) {
-		if(copiesBorrowed==null) copiesBorrowed = new ArrayList<>();
-		copiesBorrowed.add(copy);
-	}
-	*/
-	
+
 	public void addRent(BookRent rent) {
 		if(clientRents==null) clientRents = new ArrayList<>();
 		clientRents.add(rent);

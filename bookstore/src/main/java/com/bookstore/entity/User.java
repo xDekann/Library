@@ -1,8 +1,6 @@
 package com.bookstore.entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 
@@ -17,11 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @Entity(name="users")
 @Table(name="users")
@@ -137,5 +130,4 @@ public class User {
 		if(clients==null) clients = new HashSet<>();
 		clients.add(client);
 	}
-	
 }

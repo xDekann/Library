@@ -5,17 +5,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.bookstore.dao.AdminDAO;
+import com.bookstore.dao.LibraryDAO;
 import com.bookstore.entity.User;
 
 public class BookUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private AdminDAO adminDAO;
+	private LibraryDAO libraryDAO;
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = adminDAO.getUserByUsername(username);
+		User user = libraryDAO.getUserByUsername(username);
 		
 		System.out.println("=====================" + user);
 		if(user == null) {
@@ -24,5 +24,4 @@ public class BookUserDetailsService implements UserDetailsService {
 		
 		return new BookUserDetails(user);
 	}
-
 }

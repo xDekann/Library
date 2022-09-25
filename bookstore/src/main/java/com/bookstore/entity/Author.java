@@ -3,7 +3,6 @@ package com.bookstore.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
 
 @Table(name="author")
 @Entity(name="author")
@@ -25,8 +25,10 @@ public class Author {
 	@Column(name="authorid")
 	private int id;
 	@Column(name="name")
+	@NotEmpty(message = "must not be empty")
 	private String name;
 	@Column(name="surname")
+	@NotEmpty(message = "must not be empty")
 	private String surname;
 	
 	@ManyToMany(fetch=FetchType.LAZY,
@@ -82,6 +84,4 @@ public class Author {
 	public String toString() {
 		return "Author [id=" + id + ", name=" + name + ", surname=" + surname + "]";
 	}
-	
-	
 }

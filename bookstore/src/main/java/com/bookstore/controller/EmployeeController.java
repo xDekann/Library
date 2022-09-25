@@ -8,10 +8,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.bookstore.dao.AdminDAO;
+import com.bookstore.dao.LibraryDAO;
 import com.bookstore.entity.Author;
 import com.bookstore.entity.Book;
 import com.bookstore.entity.BookCopy;
@@ -33,12 +36,11 @@ import com.bookstore.entity.User;
 public class EmployeeController {
 	
 	@Autowired
-	private AdminDAO adminDAO;
+	private LibraryDAO libraryDAO;
 	@Autowired
 	private PasswordEncoder encoder;
 	
 	// creation
-	
 	@GetMapping("creation/author/form")
 	public String createAuthorForm(Model theModel) {
 		Author author = new Author();
@@ -47,8 +49,11 @@ public class EmployeeController {
 		
 	}
 	@PostMapping("creation/author/creation")
-	public String createAuthor(@ModelAttribute("author") Author author) {
-		adminDAO.addAuthor(author);
+	public String createAuthor(@Valid @ModelAttribute("author") Author author,
+							   BindingResult bs) {
+		if(bs.hasErrors()) return "employee/author-form";
+		
+		libraryDAO.addAuthor(author);
 		return "redirect:/employees/show/authors/get";
 	}
 	
@@ -63,13 +68,12 @@ public class EmployeeController {
 	
 	@PostMapping("creation/book/creation") //
 	public String createBook(@RequestParam(value="nicknames") String authors, 
-			@ModelAttribute("book") Book book) {
+			@Valid @ModelAttribute("book") Book book , BindingResult bs) {
+				
+		if(bs.hasErrors()) return "employee/book-form";
 		
-		//Author author = adminDAO.getAuthor(authorId);
-		//author.addBook(book);
-		//adminDAO.addBook(book);
-		
-		//authors.forEach(author->System.out.println(author));
+		if(LocalDate.now().getYear()<book.getyOfPublishment())
+			book.setyOfPublishment(LocalDate.now().getYear());
 		
 		// getting all authors name+surname into separate strings
 		List<String> authorsObtained = Arrays.asList(authors.split(", "));
@@ -81,29 +85,29 @@ public class EmployeeController {
 		for(String author : authorsObtained) {
 			// getting one author's name in one and surname in second string
 			separateDetails = Arrays.asList(author.split(" "));
+			if(separateDetails.size()%2!=0) {
+				book.setAuthors(null);
+				return "employee/book-form";
+			}
 			name = separateDetails.get(0);
 			surname = separateDetails.get(1);
-			dbAuthor = adminDAO.getAuthorByDetails(name, surname);
+			dbAuthor = libraryDAO.getAuthorByDetails(name, surname);
 			if(dbAuthor == null) {
 				dbAuthor = new Author();
 				dbAuthor.setName(name);
 				dbAuthor.setSurname(surname);
-				//book.addAuthor(dbAuthor);
-				//adminDAO.addAuthor(dbAuthor);
 			}
 			book.addAuthor(dbAuthor);
 			dbAuthor=null;
 		}
-		
-		adminDAO.addBook(book);
-		
+		libraryDAO.addBook(book);
 		return "redirect:/employees/show/books/get";
 	}
 	
 	@GetMapping("creation/book/creation/add/quantity")
 	public String addBookQuantity(@RequestParam ("bookId") int id, Model theModel) {
 		
-		Book book = adminDAO.getBookById(id);
+		Book book = libraryDAO.getBookById(id);
 		BookCopy bookCopy = new BookCopy();
 		
 		bookCopy.setFkBook(id);
@@ -111,10 +115,9 @@ public class EmployeeController {
 		bookCopy.setStatus(true);
 		bookCopy.setTitle(book.getTitle());
 		
-		adminDAO.addBookCopy(bookCopy);
-		//book.addCopy(bookCopy);
+		libraryDAO.addBookCopy(bookCopy);;
 		
-		theModel.addAttribute("books", adminDAO.getAllBooks());
+		theModel.addAttribute("books", libraryDAO.getAllBooks());
 		
 		return "employee/pure-books";
 	}
@@ -128,7 +131,11 @@ public class EmployeeController {
 		return "employee/client-form";
 	}
 	@PostMapping("creation/client/creation")
-	public String createClient(@ModelAttribute("client") Client client) {
+	public String createClient(@Valid @ModelAttribute("client") Client client,
+							   BindingResult bs) {
+		
+		if(bs.hasErrors()) return "employee/client-form";
+		
 		// add account for newly created employee
 		// temporarily disabled - need configuration by admin!
 		User user = new User();
@@ -136,13 +143,12 @@ public class EmployeeController {
 		user.setUsername(client.getName()+" "+client.getSurname());
 		user.setPassword(encoder.encode(client.getName()+" "+client.getSurname()));
 		
-		
 		// link user to account and vice versa
 		client.addUser(user);
 		user.addClient(client);
 		
 		// update the link
-		adminDAO.addClient(client);
+		libraryDAO.addClient(client);
 		
 		return "redirect:/employees/show/clients/get";
 	}
@@ -155,25 +161,20 @@ public class EmployeeController {
 			Model theModel) {
 		
 		// show copies of book that meets the parameters
-		List<BookCopy> copies = adminDAO.getCopiesForRent(titleCopy, phCopy, yopCopy);
+		List<BookCopy> copies = libraryDAO.getCopiesForRent(titleCopy, phCopy, yopCopy);
 		
 		theModel.addAttribute("copies",copies);
 		theModel.addAttribute("clientId",id);
 		
 		return "employee/show-bcopies";
 	}
-	// ----------------------------------------------------------------------------
 	@GetMapping("creation/clients/addrent/{copyId}/{clientId}")
 	public String addRentToClient(@PathVariable("copyId") int copyId,
 			@PathVariable("clientId") int clientId, RedirectAttributes redirectAttributes) {
-		
-		System.out.print("in double curly");
-		System.out.println("client id:"+clientId);
-		System.out.println("copy id:"+copyId);
-		
+			
 		// final rent addition
-		BookCopy copy = adminDAO.getBookCopyById(copyId);
-		Client client = adminDAO.getClientById(clientId);
+		BookCopy copy = libraryDAO.getBookCopyById(copyId);
+		Client client = libraryDAO.getClientById(clientId);
 		copy.setStatus(false);
 		BookRent rent = new BookRent();
 		rent.setId(0);
@@ -184,7 +185,7 @@ public class EmployeeController {
 		copy.addRent(rent);
 		client.addRent(rent);
 		
-		adminDAO.addRent(rent);
+		libraryDAO.addRent(rent);
 		
 		redirectAttributes.addAttribute("clientId",clientId);
 		
@@ -196,29 +197,27 @@ public class EmployeeController {
 							 @PathVariable("clientId") int clientId,
 							 RedirectAttributes redirectAttributes) {
 		
-		BookRent rent = adminDAO.getRentById(rentId);
+		BookRent rent = libraryDAO.getRentById(rentId);
 		rent.setPenalty(true);
 		
-		adminDAO.addRent(rent);
+		libraryDAO.addRent(rent);
 		
 		redirectAttributes.addAttribute("clientId",clientId);
 		return "redirect:/employees/show/clients/rents";
 	}
 	
 	// select/show
-	
 	@GetMapping("show/authors/get")
 	public String showAllAuthors(Model theModel) {
-		theModel.addAttribute("authors", adminDAO.getAllAuthors());
+		theModel.addAttribute("authors", libraryDAO.getAllAuthors());
 		return "employee/show-authors";
 	}
-	
 	
 	@GetMapping("show/book/showall") // author list related
 	public String showAllAuthorBooks(@RequestParam("authorId") int id, Model theModel) {
 		
-		theModel.addAttribute("books", adminDAO.getAuthorBooks(id));
-		theModel.addAttribute("author", adminDAO.getAuthor(id));
+		theModel.addAttribute("books", libraryDAO.getAuthorBooks(id));
+		theModel.addAttribute("author", libraryDAO.getAuthor(id));
 		
 		return "employee/author-books";
 		
@@ -226,12 +225,13 @@ public class EmployeeController {
 	@GetMapping("show/books/get") // pure book show
 	public String showAllBooks(Model theModel) {
 		
-		List<Book> allBooks = adminDAO.getAllBooks();
+		List<Book> allBooks = libraryDAO.getAllBooks();
 		
 		theModel.addAttribute("books", allBooks);
 		
 		String bookTitleForSearch="";
 		theModel.addAttribute("titleS", bookTitleForSearch);
+		
 		// state of pure-books.html span
 		theModel.addAttribute("quantity", new String("0"));
 		
@@ -241,14 +241,14 @@ public class EmployeeController {
 	@GetMapping("show/clients/get")
 	public String showAllClients(Model theModel) {
 		
-		theModel.addAttribute("clients", adminDAO.getAllClients());
+		theModel.addAttribute("clients", libraryDAO.getAllClients());
 		
 		return "employee/show-clients";
 	}
 	
 	@GetMapping("show/books/get/viasearch")
 	public String showCertainBooks(@RequestParam (value="titleS",required = false) String name, Model theModel) {
-		theModel.addAttribute("books",adminDAO.getBooksByName(name));
+		theModel.addAttribute("books",libraryDAO.getBooksByName(name));
 		// state of pure-books.html span
 		theModel.addAttribute("quantity", new String("0"));
 		return "employee/pure-books";
@@ -256,20 +256,21 @@ public class EmployeeController {
 	
 	@GetMapping("show/authors/get/viasearch")
 	public String showCertainAuthors(@RequestParam (value="authorS", required=false) String surname, Model theModel) {
-		theModel.addAttribute("authors",adminDAO.getAuthorsBySurname(surname));
+		theModel.addAttribute("authors",libraryDAO.getAuthorsBySurname(surname));
 		return "employee/show-authors";
 	}
 	
 	@GetMapping("show/clients/get/viasearch")
 	public String showCertainClients(@RequestParam (value="clientS", required=false) String email, Model theModel) {
-		theModel.addAttribute("clients",adminDAO.getClientsByEmail(email));
+		theModel.addAttribute("clients",libraryDAO.getClientsByEmail(email));
 		return "employee/show-clients";
 	}
 	@GetMapping("show/clients/rents")
 	public String showClientsRents(@RequestParam("clientId") int id, Model theModel) {
 		
-		List<BookRent> rents = adminDAO.getClientRents(id);
+		List<BookRent> rents = libraryDAO.getClientRents(id);
 		
+		// sort client rents based on id (fresh ones on top)
 		Collections.sort(rents, new Comparator<BookRent>(){
 			@Override
 			public int compare(BookRent o1, BookRent o2) {
@@ -278,72 +279,63 @@ public class EmployeeController {
 			}	
 		});
 		
-		
 		theModel.addAttribute("rents", rents);
 		theModel.addAttribute("clientId", id);
-		
 		
 		return "employee/show-rents";
 	}
 	
 	// update
-	
 	@GetMapping("update/client/form")
 	public String updateClient(@RequestParam("clientId") int id, Model theModel) {
 		
-		theModel.addAttribute("client", adminDAO.getClientById(id));
+		theModel.addAttribute("client", libraryDAO.getClientById(id));
 		
 		return "employee/client-form";
 	}
 	
 	// delete
-	
 	@GetMapping("deletion/book/deletion/del/quantity")
 	public String deleteBookQuantity(@RequestParam ("bookId") int id, Model theModel) {
 		
-		Book book = adminDAO.getBookById(id);
-		BookCopy bookCopy = adminDAO.getBookCopyByBookId(book.getId());
+		Book book = libraryDAO.getBookById(id);
+		BookCopy bookCopy = libraryDAO.getBookCopyByBookId(book.getId());
 		
 		if(bookCopy!=null) {
-			adminDAO.deleteBookCopy(bookCopy.getId());
+			libraryDAO.deleteBookCopy(bookCopy.getId());
 			book.getCopies().remove(bookCopy);
 		}
 		
-		theModel.addAttribute("books", adminDAO.getAllBooks());
+		theModel.addAttribute("books", libraryDAO.getAllBooks());
 		
 		return "employee/pure-books";
 	}
 	
 	@GetMapping("delete/client/delete")
 	public String deleteClient(@RequestParam("clientId") int id) {
-		adminDAO.deleteClient(id);
+		libraryDAO.deleteClient(id);
 		
 		return "redirect:/employees/show/clients/get";
 	}
 	@GetMapping("delete/client/cancelrent/{clientId}/{rentId}")
 	public String cancelRent(@PathVariable("rentId") int rentId,
 							 @PathVariable("clientId") int clientId,
-							 RedirectAttributes redirectAttributes) {
+							 RedirectAttributes redirectAttributes) {	
 		
-		//System.out.println("rentId:"+rentId);
-		//System.out.println("clientId:"+clientId);
-		
-		
-		BookRent rent = adminDAO.getRentById(rentId);
+		BookRent rent = libraryDAO.getRentById(rentId);
 		// update end date
 		rent.setEndDateOfRent(new Date(System.currentTimeMillis()));
 		// get difference between start-end
 		LocalDate startDate = rent.getDateOfRent().toLocalDate();
 		LocalDate endDate = rent.getEndDateOfRent().toLocalDate();
-		// if the difference exceeds 7 days, add penalty
+		// if the difference exceeds or equals 7 days, add penalty
 		long difference=ChronoUnit.DAYS.between(startDate, endDate);
-		if(difference>7) {
+		if(difference>=7) {
 			rent.setPenalty(true);
 		}
 
-		System.out.println(difference);
-		adminDAO.getRentParentCopy(rentId).setStatus(true);
-		adminDAO.addRent(rent);
+		libraryDAO.getRentParentCopy(rentId).setStatus(true);
+		libraryDAO.addRent(rent);
 		
 		redirectAttributes.addAttribute("clientId",clientId);
 		return "redirect:/employees/show/clients/rents";
@@ -355,10 +347,10 @@ public class EmployeeController {
 							 @PathVariable("clientId") int clientId,
 							 RedirectAttributes redirectAttributes) {
 		
-		BookRent rent = adminDAO.getRentById(rentId);
+		BookRent rent = libraryDAO.getRentById(rentId);
 		rent.setPenalty(false);
 		
-		adminDAO.addRent(rent);
+		libraryDAO.addRent(rent);
 		
 		redirectAttributes.addAttribute("clientId",clientId);
 		return "redirect:/employees/show/clients/rents";
@@ -369,10 +361,10 @@ public class EmployeeController {
 	public String getBookAvailability(@RequestParam("bookId") int id, Model theModel) {
 		
 		
-		theModel.addAttribute("books", adminDAO.getAllBooks());
+		theModel.addAttribute("books", libraryDAO.getAllBooks());
 		
 		int quantityVal=0;
-		Book checkForAvailableCopies = adminDAO.getBookById(id);
+		Book checkForAvailableCopies = libraryDAO.getBookById(id);
 		List<BookCopy> copies = checkForAvailableCopies.getCopies();
 		
 		for(BookCopy copy : copies) {
@@ -385,7 +377,6 @@ public class EmployeeController {
 		
 		theModel.addAttribute("quantityVal",quantityVal);
 		
-		return "employee/pure-books";
-		
+		return "employee/pure-books";	
 	}
 }

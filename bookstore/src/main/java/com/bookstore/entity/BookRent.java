@@ -97,8 +97,4 @@ public class BookRent {
 	public void setCopy(BookCopy copy) {
 		this.copy = copy;
 	}
-	
-	
-	
-	
 }

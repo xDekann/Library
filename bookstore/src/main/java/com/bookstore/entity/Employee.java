@@ -1,8 +1,6 @@
 package com.bookstore.entity;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -15,9 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 @Table(name="employee")
 @Entity(name="employee")
@@ -28,10 +27,14 @@ public class Employee {
 	@Column(name="emplid")
 	private int id;
 	@Column(name="name")
+	@NotEmpty(message = "must not be empty")
 	private String name;
 	@Column(name="surname")
+	@NotEmpty(message = "must not be empty")
 	private String surname;
 	@Column(name="email")
+	@NotEmpty(message = "must not be empty")
+	@Email(message="email")
 	private String email;
 	
 
@@ -98,5 +101,4 @@ public class Employee {
 		if(users==null) users = new HashSet<>();
 		users.add(user);
 	}
-	
 }

@@ -35,12 +35,13 @@
 			<label class="col-sm-1 col-form-label ml-1" for="yOfPublishment">Year of publishment</label>
 			<div class="col-sm-5">
 				<input type="text" th:field="*{yOfPublishment}" placeholder="2022" th:required="required" id="yOfPublishment">
+				<p th:errors="*{yOfPublishment}"/>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="col-sm-1 col-form-label ml-1" for="nicknames">Authors</label>
 			<div class="col-sm-5">
-				<textarea rows="10" cols="100" th:name="nicknames"  placeholder="John Doe,Will Smith,Edward Brown" th:required="required" id="nicknames"></textarea>
+				<textarea rows="10" cols="100" th:name="nicknames"  placeholder="John Doe, Will Smith, Edward Brown <- Stick to the pattern to continue" th:required="required" id="nicknames"></textarea>
 			</div>
 		</div>
 		<button class="btn btn-primary col-sm-3 ml-1" type="submit">Submit</button>

@@ -11,9 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 @Entity(name="authorities")
 @Table(name="authorities")
 public class Authority {
@@ -52,8 +49,4 @@ public class Authority {
 	public void setAuthorityName(String authorityName) {
 		this.authorityName = authorityName;
 	}
-
-
-	
-	
 }
