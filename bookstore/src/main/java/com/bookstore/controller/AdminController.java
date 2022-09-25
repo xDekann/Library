@@ -66,14 +66,15 @@ public class AdminController {
 		if(bs.hasErrors()) return "admin/emp-form";
 		// add account for newly created employee
 		// temporarily disabled - need configuration by admin!
-		User user = new User();
-		user.setEnabled(false);
-		user.setUsername(employee.getName()+" "+employee.getSurname());
-		user.setPassword(encoder.encode(employee.getName()+" "+employee.getSurname()));
-		
-		// link user to account and vice versa
-		employee.addUser(user);
-		user.addEmployee(employee);
+		if(employee.getId()==0) {
+			User user = new User();
+			user.setEnabled(false);
+			user.setUsername(employee.getName()+" "+employee.getSurname());
+			user.setPassword(encoder.encode(employee.getName()+" "+employee.getSurname()));
+			// link user to account and vice versa
+			employee.addUser(user);
+			user.addEmployee(employee);
+		}
 		
 		libraryDAO.addEmployee(employee);
 		

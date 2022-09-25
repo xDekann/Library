@@ -36,8 +36,7 @@ public class Book {
 	@Column(name="publishing_house")
 	private String publishingHouse;
 	@Column(name="year_of_publishment")
-	@NotEmpty(message = "must not be empty")
-	@Min(value = 2007, message = "year must be 2007 or higher")
+	@Min(value = 1900, message = "year must be 1900 or higher")
 	private int yOfPublishment;
 	
 	@ManyToMany(fetch=FetchType.LAZY,

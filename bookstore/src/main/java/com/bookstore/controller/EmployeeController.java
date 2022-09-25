@@ -138,14 +138,16 @@ public class EmployeeController {
 		
 		// add account for newly created employee
 		// temporarily disabled - need configuration by admin!
-		User user = new User();
-		user.setEnabled(false);
-		user.setUsername(client.getName()+" "+client.getSurname());
-		user.setPassword(encoder.encode(client.getName()+" "+client.getSurname()));
-		
-		// link user to account and vice versa
-		client.addUser(user);
-		user.addClient(client);
+		if(client.getId()==0) {
+			User user = new User();
+			user.setEnabled(false);
+			user.setUsername(client.getName()+" "+client.getSurname());
+			user.setPassword(encoder.encode(client.getName()+" "+client.getSurname()));
+			// link user to account and vice versa
+			client.addUser(user);
+			user.addClient(client);
+		}
+
 		
 		// update the link
 		libraryDAO.addClient(client);
@@ -192,7 +194,7 @@ public class EmployeeController {
 		return "redirect:/employees/show/clients/rents";
 	}
 	
-	@GetMapping("create/client/createpenal/{clientId}/{rentId}")
+	@GetMapping("creation/client/createpenal/{clientId}/{rentId}")
 	public String addPenal(@PathVariable("rentId") int rentId,
 							 @PathVariable("clientId") int clientId,
 							 RedirectAttributes redirectAttributes) {

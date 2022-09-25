@@ -10,7 +10,7 @@
 	<title>Login form</title>
 </head>
 <body>
-	<h3 class="ml-2 mb-3">Custom login page</h3>
+	<h3 class="ml-2 mb-3">Login page</h3>
 	<form th:action="@{/authenticateUser}" method="POST">     
 		<div class="form-group row">
 			<label class="col-sm-1 col-form-label ml-2" for="username">Username</label>
@@ -30,8 +30,10 @@
 	</form>
 	
 	<div th:if="${param.logout!=null}" class="alert alert-success ml-2">
-		<i>You have successfully logged out</i>
+		<i>You have successfully logged out!</i>
 	</div>
-	
+	<div th:if="${param.error!=null}" class="alert alert-danger ml-2">
+		<i>Invalid username or password!</i>
+	</div>
 </body>
 </html>
