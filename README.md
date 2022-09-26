@@ -1,14 +1,16 @@
 # Library
 ## Basic information
 My own project (a web app) of a simplified library system. Written with the help of Spring Boot (maven), Spring Security, JPA, Hibernate, mySQL, Thymeleaf, HTML and Bootstrap. It allows authorized users to manage books owned by the library, rent them to the clients and manage rents of clients (add penalty, end rent). It also includes user management system. Certain content is visible based on roles (employee/admin).
+
 ![librarymodel](https://user-images.githubusercontent.com/106389146/192172291-7be6f7f5-95a8-4734-a3cb-64cfa848b82b.png)
 ## How to use
 Download the content of the bookstore directory and simply import it to your IDE. Change the content of application.properties according to your mySQL configuration or user account settings, download the content of sql-files directory and import one of the databases from here:
  - Fully-empty-library.sql contains the database without any data.
- - Usable-library.sql contains the database with admin account created (Username: admin Password: admin), password is encrypted in database using Bcrypt.
+ - Usable-library.sql contains the database with admin account created (Username: admin Password: admin), password is encrypted in database using Bcrypt. Roles are already added (Employee/Client/Admin)
  - Filled-library.sql a database with some data included, it contains admin user mentioned above, and also employee working account (Username: Susan Password: Susan).
  
 After that just run the application.
+
 ## Role permissions
 ![homesiteadmin](https://user-images.githubusercontent.com/106389146/192172424-b1e213ec-9986-45c7-b5a6-b670455b8410.PNG)
 
