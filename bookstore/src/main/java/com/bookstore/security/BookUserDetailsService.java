@@ -17,7 +17,6 @@ public class BookUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = libraryDAO.getUserByUsername(username);
 		
-		System.out.println("=====================" + user);
 		if(user == null) {
 			throw new UsernameNotFoundException("User not found - Spring Security");
 		}
