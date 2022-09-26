@@ -9,7 +9,7 @@ Download the content of the bookstore directory and simply import it to your IDE
  - Usable-library.sql contains the database with admin account created (Username: admin Password: admin), password is encrypted in database using Bcrypt. Roles are already added (Employee/Client/Admin)
  - Filled-library.sql a database with some data included, it contains admin user mentioned above, and also employee working account (Username: Susan Password: Susan).
  
-After that just run the application.
+After that just run the application. I have also compressed the project into the .jar file, with .properties setup of mine (check the project directory).
 
 ## Role permissions
 ![homesiteadmin](https://user-images.githubusercontent.com/106389146/192172424-b1e213ec-9986-45c7-b5a6-b670455b8410.PNG)
@@ -36,4 +36,5 @@ Employee cannot see nor get via URL to users/employees management.
 
 ![Client-rents](https://user-images.githubusercontent.com/106389146/192173088-8b3f896e-3e0a-4198-9ab7-874a2f55d2ee.PNG)
 
-
+## To do
+The project still has some things to change and possible customer site additions.
