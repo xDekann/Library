@@ -1,6 +1,7 @@
 package com.bookstore;
 
 import static org.mockito.ArgumentMatchers.intThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import java.util.Set;
@@ -28,14 +29,15 @@ class DBTesting{
 	
 	@Test
 	void seeIfEmplUserConnectionTableWorks() {
-		Query theQuery = entityManager.createNativeQuery("select e.* FROM employee e inner join employee_connector c on c.user_id_user=e.emplid", Employee.class);
-		System.out.println(theQuery.getSingleResult());
+		Query theQuery = entityManager.createNativeQuery("select distinct e.* FROM employee e inner join employee_connector c on c.user_id_user=e.emplid", Employee.class);
+		System.out.println("1");
+		System.out.println("1"+theQuery.getResultList());
 	}
 	@Test
 	void seeIfYouCanGetAllRolesAsAuthorityArray() {
 		Query theQuery = entityManager.createNativeQuery("select * from authorities", Authority.class);
 		List<Authority> authorities = theQuery.getResultList();
-		authorities.forEach(role -> System.out.println(role.getAuthorityName()));
+		authorities.forEach(role -> System.out.println("2"+role.getAuthorityName()));
 	}
 	@Test
 	void seeIfCanGetSingleAuthorityByName() {
@@ -44,7 +46,7 @@ class DBTesting{
 		theQuery.setParameter("aname", name);
 		
 		System.out.println("seeIfCanGetSingleAuthorityByName()");
-		System.out.println(((Authority) theQuery.getSingleResult()).getAuthorityName());
+		assertThat(((Authority) theQuery.getSingleResult()).getAuthorityName()).isEqualTo("ROLE_ADMIN");
 		
 	}
 	@Test
@@ -53,6 +55,7 @@ class DBTesting{
 		Query theQuery = entityManager.createQuery("from book b inner join fetch b.authors a where a.id=: theid",Book.class);
 		theQuery.setParameter("theid", id);
 		List<Book> books = theQuery.getResultList();
-		books.forEach(book->System.out.println(book.getId()));
+		books.forEach(book->System.out.println("4"+book.getId()));
+		
 	}
 }
